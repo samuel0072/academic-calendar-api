@@ -16,5 +16,6 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 class AcademicCalendar(TimeStampedModel):
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.TextField(blank=True, null=True, max_length=500)
