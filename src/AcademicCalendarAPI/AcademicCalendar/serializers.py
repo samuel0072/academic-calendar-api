@@ -4,7 +4,7 @@ from .models import *
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcademicCalendar
-        fields = ['id', 'start_date', 'end_date', 'description']
+        fields = ['id', 'start_date', 'end_date', 'description', 'organization']
 
     def validate(self, data):
         errors = {}

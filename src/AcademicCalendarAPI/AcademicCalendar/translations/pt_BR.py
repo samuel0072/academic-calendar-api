@@ -6,3 +6,4 @@ class Translations:
     NonSchoolSaturday = 'Sábado não letivo'
     SchoolDays = 'Dias letivos'
     NonSchoolDays = 'Dias não letivos'
+    User = 'Usuário'

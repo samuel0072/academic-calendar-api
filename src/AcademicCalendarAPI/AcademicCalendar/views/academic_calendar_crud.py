@@ -8,7 +8,9 @@ from rest_framework import status
 
 @api_view(['POST'])
 def createCalendar(request):
-    serializer = CalendarSerializer(data = request.data)
+    data = request.data
+    data['organization'] = 1
+    serializer = CalendarSerializer(data = data)
     if serializer.is_valid():
         calendar = serializer.save()
 
