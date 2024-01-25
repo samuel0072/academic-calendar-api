@@ -11,10 +11,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def create_calendar(request):
+def create_event(request):
     data = request.data
     data['organization'] = request.user.organization.id
-    serializer = CalendarSerializer(data = data)
+    serializer = EventSerializer(data = data)
     if serializer.is_valid():
         serializer.save()
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)

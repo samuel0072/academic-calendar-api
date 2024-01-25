@@ -1,10 +1,6 @@
 from django.db import models
 from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
 
 # Create your models here.
 class TimeStampedModel(models.Model):
@@ -42,16 +38,16 @@ class Event(TimeStampedModel):
         ('SD', settings.TRANSLATIONS.SchoolDays)
     ]
 
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now)
+    start_date = models.DateField()
+    end_date = models.DateField()
     description = models.TextField(blank=True, null=True, max_length=500)
-    label = models.CharField(blank=True, null=True, max_length=3, choices=LABEL_TYPES)
+    label = models.CharField(max_length=3, choices=LABEL_TYPES)
     hexadecimal_color = models.TextField(max_length=6, default="FFFFFF")
     academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
 
     def __str__(self) -> str:
-        return self.description
+        return self.description + " " + self.get_label_display() 
     
 class Campus(TimeStampedModel):
     name = models.TextField(max_length=150)
@@ -79,8 +75,8 @@ class SpecialDate(TimeStampedModel):
         return self.date.isoformat() + ' - ' + self.description + ' - ' + self.get_type_display() 
     
 class Semester(TimeStampedModel):
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now)
+    start_date = models.DateField()
+    end_date = models.DateField()
     description = models.TextField(max_length=150)
     academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
