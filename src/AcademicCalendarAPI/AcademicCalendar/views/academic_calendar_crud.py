@@ -16,13 +16,7 @@ def createCalendar(request):
     data['organization'] = request.user.organization.id
     serializer = CalendarSerializer(data = data)
     if serializer.is_valid():
-        calendar = serializer.save()
-
-        if(calendar.description is None or len(calendar.description) == 0):
-            calendar.description = "Calendário Acadêmico " + str(calendar.id)
-            calendar.save()
-        serializer = CalendarSerializer(calendar)   
-
+        serializer.save()
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return JsonResponse(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
