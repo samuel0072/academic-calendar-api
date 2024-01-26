@@ -1,6 +1,6 @@
 from django.db import models
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext as _
 
 # Create your models here.
 class TimeStampedModel(models.Model):
@@ -34,8 +34,8 @@ class AcademicCalendar(TimeStampedModel):
 
 class Event(TimeStampedModel):
     LABEL_TYPES = [
-        ('NSD', settings.TRANSLATIONS.NonSchoolDays), 
-        ('SD', settings.TRANSLATIONS.SchoolDays)
+        ('NSD', _("Non-school days")), 
+        ('SD', _("School days"))
     ]
 
     start_date = models.DateField()
@@ -58,10 +58,10 @@ class Campus(TimeStampedModel):
 
 class SpecialDate(TimeStampedModel):
     SPECIAL_DATE_TYPES = [
-        ('H', settings.TRANSLATIONS.Holiday),
-        ('RH', settings.TRANSLATIONS.RegionalHoliday),
-        ('NSS', settings.TRANSLATIONS.NonSchoolSaturday),
-        ('NSD', settings.TRANSLATIONS.NonSchoolDay),
+        ('H', _("Holiday")),
+        ('RH', _("Regional holiday")),
+        ('NSS', _("Non-school Saturday")),
+        ('NSD', _("Non-school day")),
     ]
 
     date = models.DateField()
@@ -88,10 +88,7 @@ class User(AbstractUser):
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
 
     def full_name(self):
-        """
-        Retorna o nome completo do usuário
-        """
         return "{0} {1}".format(self.first_name, self.last_name)
 
     def __str__(self):
-        return "{0} {1}".format(settings.TRANSLATIONS.User, self.full_name())
+        return "{0} {1}".format(_("User"), self.full_name())
