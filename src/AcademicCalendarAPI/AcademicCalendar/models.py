@@ -65,7 +65,7 @@ class SpecialDate(TimeStampedModel):
     ]
 
     date = models.DateField()
-    type = models.CharField(blank=True, null=True, max_length=3, choices=SPECIAL_DATE_TYPES)
+    type = models.CharField(max_length=3, choices=SPECIAL_DATE_TYPES)
     academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT, blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
     campi = models.ManyToManyField(Campus, related_name='special_date_campus', blank=True)

@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import *
 from django.conf import settings
 from django.utils.translation import gettext as _
-
 import re
 
 class CalendarSerializer(serializers.ModelSerializer):
@@ -48,4 +47,33 @@ class EventSerializer(serializers.ModelSerializer):
         
         return data
 
-# data = {'start_date': "2024-1-1",  'end_date': "2024-12-31",  'description': "evento1",  'organization': 1,  'label': "NSD",  'hexadecimal_color': "FFFFFF",  'academic_calendar':1}
+class SpecialDateSerializer(serializers.ModelSerializer):
+    SUNDAY_WEEK_DAY = 6
+    class Meta:
+        model = SpecialDate
+        fields = [
+            'id', 
+            'date', 
+            'type', 
+            'academic_calendar', 
+            'organization', 
+            'campi', 
+            'description'
+        ]
+
+    def validate(self, data):
+        found_date = SpecialDate.objects.filter(
+            organization = data["organization"],
+            date = data["date"],
+            type = data["type"]
+        )
+
+        if found_date.count() > 0:
+            raise serializers.ValidationError(_("There is another special date with the given informations"))
+        
+        return data
+    
+    def validate_date(self, value):
+        if value.weekday() == self.SUNDAY_WEEK_DAY:
+            raise serializers.ValidationError(_("Sunday is not a valid date"))
+        return value
