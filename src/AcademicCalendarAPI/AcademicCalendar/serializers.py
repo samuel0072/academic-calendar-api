@@ -41,39 +41,10 @@ class EventSerializer(serializers.ModelSerializer):
         return value
     
     def validate(self, data):
-        print(data['end_date'], data['start_date'])
         if(data['end_date'] < data['start_date']):
            raise serializers.ValidationError(_("End date has to be after start date"))
         
-        return data
-
-class SpecialDateSerializer(serializers.ModelSerializer):
-    SUNDAY_WEEK_DAY = 6
-    class Meta:
-        model = SpecialDate
-        fields = [
-            'id', 
-            'date', 
-            'type', 
-            'academic_calendar', 
-            'organization', 
-            'campi', 
-            'description'
-        ]
-
-    def validate(self, data):
-        found_date = SpecialDate.objects.filter(
-            organization = data["organization"],
-            date = data["date"],
-            type = data["type"]
-        )
-
-        if found_date.count() > 0:
-            raise serializers.ValidationError(_("There is another special date with the given informations"))
+        if data["type"] == "RH" and len(data["campi"]) == 0:
+            raise serializers.ValidationError(_("A campus must be provided for this regional holiday"))
         
         return data
-    
-    def validate_date(self, value):
-        if value.weekday() == self.SUNDAY_WEEK_DAY:
-            raise serializers.ValidationError(_("Sunday is not a valid date"))
-        return value

@@ -31,23 +31,6 @@ class AcademicCalendar(TimeStampedModel):
 
     def __str__(self) -> str:
         return self.organization.name + ' - ' + self.description
-
-class Event(TimeStampedModel):
-    LABEL_TYPES = [
-        ('NSD', _("Non-school days")), 
-        ('SD', _("School days"))
-    ]
-
-    start_date = models.DateField()
-    end_date = models.DateField()
-    description = models.TextField(blank=True, null=True, max_length=500)
-    label = models.CharField(max_length=3, choices=LABEL_TYPES)
-    hexadecimal_color = models.TextField(max_length=6, default="FFFFFF")
-    academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT)
-    organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
-
-    def __str__(self) -> str:
-        return self.description + " " + self.get_label_display() 
     
 class Campus(TimeStampedModel):
     name = models.TextField(max_length=150)
@@ -56,23 +39,27 @@ class Campus(TimeStampedModel):
     def __str__(self) -> str:
         return self.name
 
-class SpecialDate(TimeStampedModel):
-    SPECIAL_DATE_TYPES = [
+
+class Event(TimeStampedModel):
+    LABEL_TYPES = [
         ('H', _("Holiday")),
         ('RH', _("Regional holiday")),
         ('NSS', _("Non-school Saturday")),
-        ('NSD', _("Non-school day")),
+        ('NSD', _("Non-school days")), 
+        ('SD', _("School days"))
     ]
 
-    date = models.DateField()
-    type = models.CharField(max_length=3, choices=SPECIAL_DATE_TYPES)
-    academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT, blank=True, null=True)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    label = models.CharField(max_length=3, choices=LABEL_TYPES)
+    hexadecimal_color = models.TextField(max_length=6, default="FFFFFF")
+    academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
     campi = models.ManyToManyField(Campus, related_name='special_date_campus', blank=True)
-    description = models.TextField(blank=True, null=True, max_length=500)
 
     def __str__(self) -> str:
-        return self.date.isoformat() + ' - ' + self.description + ' - ' + self.get_type_display() 
+        return self.description + " " + self.get_label_display() 
     
 class Semester(TimeStampedModel):
     start_date = models.DateField()
