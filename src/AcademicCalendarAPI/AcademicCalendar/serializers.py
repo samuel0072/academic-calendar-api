@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
-from django.conf import settings
 from django.utils.translation import gettext as _
+from django.db.models import Q
 import re
 
 class CalendarSerializer(serializers.ModelSerializer):
@@ -44,7 +44,45 @@ class EventSerializer(serializers.ModelSerializer):
         if(data['end_date'] < data['start_date']):
            raise serializers.ValidationError(_("End date has to be after start date"))
         
-        if data["type"] == "RH" and len(data["campi"]) == 0:
-            raise serializers.ValidationError(_("A campus must be provided for this regional holiday"))
+        if data["type"] != "H" and len(data["campi"]) == 0:
+            raise serializers.ValidationError(_("A campus must be provided for this event"))
         
         return data
+    
+class SemesterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Semester
+        fields = [
+            'id', 
+            'start_date', 
+            'end_date', 
+            'description', 
+            'organization', 
+            'academic_calendar'
+        ]
+
+    def validate(self, data):
+        if(data['end_date'] < data['start_date']):
+           raise serializers.ValidationError(_("End date has to be after start date"))
+        
+        if data["academic_calendar"].organization.id != data["organization"].id:
+            raise serializers.ValidationError(_("You don't have permission to create semesters on this calendar"))
+        
+        #Verificar se um semestre ta começando ou finalizando no meio de outro
+        semesters = Semester.objects.filter(academic_calendar = data["academic_calendar"]).filter( 
+                Q(
+                    start_date__lte = data['start_date'], 
+                    end_date__gte = data['start_date']
+                ) 
+                | 
+                Q(
+                    start_date__lte = data['end_date'],
+                    end_date__gte = data['end_date']
+                )
+            ).count()
+        
+        if semesters > 0:
+            raise serializers.ValidationError(_("A semester can't start or end during another semester"))
+        
+        return data
+    
