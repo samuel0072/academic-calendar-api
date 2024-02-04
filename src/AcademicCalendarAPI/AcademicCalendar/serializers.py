@@ -4,6 +4,8 @@ from django.utils.translation import gettext as _
 from django.db.models import Q
 import re
 
+SATURDAY_WEEKDAY = 5
+
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcademicCalendar
@@ -47,6 +49,12 @@ class EventSerializer(serializers.ModelSerializer):
         
         if data["label"] != Event.HOLIDAY and len(data["campi"]) == 0:
             raise serializers.ValidationError(_("A campus must be provided for this event"))
+        
+        if (data["label"] == Event.NONSCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
+            raise serializers.ValidationError(_("Tha start date isn't a saturday"))
+        
+        if(data["label"] == Event.HOLIDAY):
+            data["campi"] = []
         
         if data["academic_calendar"] != None:
             if data["academic_calendar"].organization.id != data["organization"].id:
