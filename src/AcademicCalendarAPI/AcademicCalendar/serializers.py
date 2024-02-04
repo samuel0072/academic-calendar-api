@@ -31,7 +31,8 @@ class EventSerializer(serializers.ModelSerializer):
             'organization', 
             'label', 
             'hexadecimal_color', 
-            'academic_calendar'
+            'academic_calendar',
+            'campi'
         ]
 
     def validate_hexadecimal_color(self, value):
@@ -44,8 +45,16 @@ class EventSerializer(serializers.ModelSerializer):
         if(data['end_date'] < data['start_date']):
            raise serializers.ValidationError(_("End date has to be after start date"))
         
-        if data["type"] != "H" and len(data["campi"]) == 0:
+        if data["label"] != "H" and len(data["campi"]) == 0:
             raise serializers.ValidationError(_("A campus must be provided for this event"))
+        
+        if data["academic_calendar"] != None:
+            if data["academic_calendar"].organization.id != data["organization"].id:
+                raise serializers.ValidationError(_("You don't have permission to create events on this calendar"))
+        
+        for campus in data["campi"]:
+            if campus.organization.id != data["organization"].id:
+                raise serializers.ValidationError(_("You don't have permission to create events on this campus: %(name)s" % {"name": campus.name} ))
         
         return data
     
