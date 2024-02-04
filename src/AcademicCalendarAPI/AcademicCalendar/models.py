@@ -41,12 +41,17 @@ class Campus(TimeStampedModel):
 
 
 class Event(TimeStampedModel):
+    HOLIDAY = "H"
+    REGIONAL_HOLIDAY = "RH"
+    NONSCHOOL_SATURDAY = "NSS"
+    NONSCHOOL_DAYS = "NSD"
+    SCHOOL_DAYS = "SD"
     LABEL_TYPES = [
-        ('H', _("Holiday")),
-        ('RH', _("Regional holiday")),
-        ('NSS', _("Non-school Saturday")),
-        ('NSD', _("Non-school days")), 
-        ('SD', _("School days"))
+        (HOLIDAY, _("Holiday")),
+        (REGIONAL_HOLIDAY, _("Regional holiday")),
+        (NONSCHOOL_SATURDAY, _("Non-school Saturday")),
+        (NONSCHOOL_DAYS, _("Non-school days")), 
+        (SCHOOL_DAYS, _("School days"))
     ]
 
     start_date = models.DateField()

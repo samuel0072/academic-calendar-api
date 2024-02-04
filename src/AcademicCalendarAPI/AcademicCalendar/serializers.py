@@ -45,7 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
         if(data['end_date'] < data['start_date']):
            raise serializers.ValidationError(_("End date has to be after start date"))
         
-        if data["label"] != "H" and len(data["campi"]) == 0:
+        if data["label"] != Event.HOLIDAY and len(data["campi"]) == 0:
             raise serializers.ValidationError(_("A campus must be provided for this event"))
         
         if data["academic_calendar"] != None:
