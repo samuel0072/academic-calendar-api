@@ -3,6 +3,7 @@ from .models import *
 from django.utils.translation import gettext as _
 from django.db.models import Q
 import re
+import sys
 
 SATURDAY_WEEKDAY = 5
 
@@ -103,3 +104,8 @@ class SemesterSerializer(serializers.ModelSerializer):
         
         return data
     
+class CalendarSearchSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required = False, default = None, min_value=0, max_value = sys.maxsize)
+    start_date = serializers.DateField(required = False, default = None)
+    end_date = serializers.DateField(required = False, default = None) 
+    description = serializers.CharField(required = False, default = None)

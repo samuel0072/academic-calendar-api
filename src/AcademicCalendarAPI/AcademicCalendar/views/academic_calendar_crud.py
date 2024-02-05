@@ -11,6 +11,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination 
+
+paginator = PageNumberPagination()
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -44,4 +47,33 @@ def school_days_count(request, id):
     except Exception as e:
         return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
     
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def search_calendar(request):
+    params = CalendarSearchSerializer(data = request.query_params)
+
+    if params.is_valid():
+        calendars = AcademicCalendar.objects.filter(organization__id = request.user.organization.id)
+
+        if params.data["id"] != None:
+            calendars = calendars.filter(pk = params.data["id"])
+        
+        if params.data["start_date"] != None:
+            calendars = calendars.filter(start_date__gte = params.data["start_date"])
+        
+        if params.data["end_date"] != None:
+            calendars = calendars.filter(start_date__lte = params.data["end_date"])
     
+        if params.data["description"] != None:
+            calendars = calendars.filter(description__icontains = params.data["description"])
+
+        calendars = calendars.exclude(deleted_at__isnull = False).order_by('updated_at')
+
+        calendar_serializer = CalendarSerializer(data = calendars, many = True)
+
+        calendar_serializer.is_valid()
+
+        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+    
+    return Response(params.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
