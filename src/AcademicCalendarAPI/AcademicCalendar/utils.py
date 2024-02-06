@@ -16,7 +16,7 @@ def count_school_days(calendar: AcademicCalendar) -> dict:
     counting["sundays"] = sundays_count
 
     for semester in semesters:
-        sem[semester.description] = count_non_school_days_semester(semester, counting["total_days"] - counting["sundays"])
+        sem[semester.description] = count_non_school_days_semester(semester)
     
     counting["semesters"] = sem
 
@@ -32,13 +32,17 @@ def count_specific_weekdays_between_two_dates(weekday: int, start_date: datetime
     
     return weekday_count
 
-def count_non_school_days_semester(semester: Semester, school_days: int) -> int:
+def count_non_school_days_semester(semester: Semester) -> int:
     non_school_days = {}
     campi = Campus.objects.filter(organization = semester.organization)
     
+    semester_total_days = (semester.end_date - semester.start_date).days + 1
+    sundays_count = count_specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, semester.start_date, semester.end_date)
+    available_school_days = semester_total_days - sundays_count
+    
     for campus in campi:
         campus_non_school_day = non_school_days_in_campus(campus, semester.start_date, semester.end_date)
-        non_school_days[campus.id] = school_days - len(campus_non_school_day)
+        non_school_days[campus.id] = available_school_days - len(campus_non_school_day)
     
     return non_school_days
 
