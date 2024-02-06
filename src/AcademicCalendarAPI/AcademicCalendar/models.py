@@ -47,9 +47,9 @@ class Event(TimeStampedModel):
     NONSCHOOL_DAYS = "NSD"
     SCHOOL_DAYS = "SD"
     LABEL_TYPES = [
-        (HOLIDAY, _("Holiday")),
+        (HOLIDAY, _("National holiday")),
         (REGIONAL_HOLIDAY, _("Regional holiday")),
-        (NONSCHOOL_SATURDAY, _("Non-school Saturday")),
+        (NONSCHOOL_SATURDAY, _("Non-school saturday")),
         (NONSCHOOL_DAYS, _("Non-school days")), 
         (SCHOOL_DAYS, _("School days"))
     ]
@@ -59,7 +59,7 @@ class Event(TimeStampedModel):
     description = models.TextField(blank=True, null=True, max_length=500)
     label = models.CharField(max_length=3, choices=LABEL_TYPES)
     hexadecimal_color = models.TextField(max_length=6, default="FFFFFF")
-    academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT)
+    academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT, blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
     campi = models.ManyToManyField(Campus, related_name='special_date_campus', blank=True)
 

@@ -57,6 +57,9 @@ class EventSerializer(serializers.ModelSerializer):
         if(data["label"] == Event.HOLIDAY):
             data["campi"] = []
         
+        if(data["label"] in [Event.HOLIDAY, Event.REGIONAL_HOLIDAY]):
+            data["academic_calendar"] = None
+            
         if data["academic_calendar"] != None:
             if data["academic_calendar"].organization.id != data["organization"].id:
                 raise serializers.ValidationError(_("You don't have permission to create events on this calendar"))
