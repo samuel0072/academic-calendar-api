@@ -1,6 +1,11 @@
 import sys
+import json
+from json.decoder import JSONDecodeError
+
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
+from AcademicCalendar.importers.national_holiday_importer import NationalHolidayImporter
+from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 
 from django.http import JsonResponse
 
@@ -10,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from django.utils.translation import gettext as _
+
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -45,3 +51,65 @@ def list_event(request, id):
         return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
     
     return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def import_regional_holidays(request):
+    serializer = None
+    
+    try:
+        if not("campi" in request.data):
+            raise AcademicCalendarException(_("campi is required"))
+        
+        campi = json.loads(request.data["campi"])
+        
+        if type(campi) != list:
+            raise AcademicCalendarException(_("campi should be an array of campus's ids"))
+        
+        campi = Campus.objects.filter(id__in = campi)
+        serializer = CampusSerializar(data = campi, many=True)
+        serializer.is_valid()
+
+    except JSONDecodeError:
+        return Response({"errors": _("campi should be a valid json list")}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+    
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+    return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])   
+def import_national_holidays(request):
+    try:
+        if len(request.FILES) == 0:
+            raise AcademicCalendarException(_('No file were provided.'))
+        
+        if not("file" in request.FILES):
+            raise AcademicCalendarException(_('The \'file\' parameter is required.'))
+        
+        if len(request.FILES) > 1:
+            raise AcademicCalendarException(_('You should provide one file at a time'))
+        
+        importer = NationalHolidayImporter(request.FILES["file"], request.user.organization)
+        importer.import_event()
+
+        return Response(status=status.HTTP_204_NO_CONTENT, content_type="aplication/json")
+
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+    
+    except ValueError:
+        return Response({"errors": [_('Could not read your .xlsx file')]}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+    
+    except Exception as err:
+        print(err.args)
+        print(type(err))
+        return Response({"errors": [_('An unexpected error ocurred.')]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    

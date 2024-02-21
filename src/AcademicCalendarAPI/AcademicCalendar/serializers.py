@@ -112,3 +112,12 @@ class CalendarSearchSerializer(serializers.Serializer):
     start_date = serializers.DateField(required = False, default = None)
     end_date = serializers.DateField(required = False, default = None) 
     description = serializers.CharField(required = False, default = None)
+
+class CampusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Campus
+        fields = [
+            'id', 
+            'name', 
+            'organization',
+        ]
