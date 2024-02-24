@@ -4,7 +4,7 @@ from json.decoder import JSONDecodeError
 
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
-from AcademicCalendar.importers.national_holiday_importer import NationalHolidayImporter
+from AcademicCalendar.importers.holiday_importer import HolidayImporter
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 
 from django.http import JsonResponse
@@ -56,8 +56,6 @@ def list_event(request, id):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])    
 def import_regional_holidays(request):
-    serializer = None
-    
     try:
         if not("campi" in request.data):
             raise AcademicCalendarException(_("campi is required"))
@@ -67,21 +65,43 @@ def import_regional_holidays(request):
         if type(campi) != list:
             raise AcademicCalendarException(_("campi should be an array of campus's ids"))
         
-        campi = Campus.objects.filter(id__in = campi)
-        serializer = CampusSerializar(data = campi, many=True)
+        if len(request.FILES) == 0:
+            raise AcademicCalendarException(_('No file were provided.'))
+        
+        if not("file" in request.FILES):
+            raise AcademicCalendarException(_('The \'file\' parameter is required.'))
+        
+        if len(request.FILES) > 1:
+            raise AcademicCalendarException(_('You should provide one file at a time'))
+        
+        campi = Campus.objects.filter(id__in = campi, organization = request.user.organization)
+
+        if len(campi) == 0:
+            raise AcademicCalendarException(_('You should provide at least 1 campus from your organization.'))
+
+        importer = HolidayImporter(request.FILES["file"], request.user.organization, campi = campi, event_label=Event.REGIONAL_HOLIDAY)
+        imported_events = importer.import_event()
+
+        serializer = EventSerializer(data = imported_events, many=True)
         serializer.is_valid()
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
 
     except JSONDecodeError:
-        return Response({"errors": _("campi should be a valid json list")}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": _("campi should be a valid json list")}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except ValueError:
+        error = _('This file could not be imported. Verify whether the file format is .xlsx or the data is structured in a date, name format.')
+        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
         return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
     
-    return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+    
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -97,16 +117,20 @@ def import_national_holidays(request):
         if len(request.FILES) > 1:
             raise AcademicCalendarException(_('You should provide one file at a time'))
         
-        importer = NationalHolidayImporter(request.FILES["file"], request.user.organization)
-        importer.import_event()
+        importer = HolidayImporter(request.FILES["file"], request.user.organization)
+        imported_events = importer.import_event()
 
-        return Response(status=status.HTTP_204_NO_CONTENT, content_type="aplication/json")
+        serializer = EventSerializer(data = imported_events, many=True)
+        serializer.is_valid()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
 
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except ValueError:
-        return Response({"errors": [_('Could not read your .xlsx file')]}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        error = _('This file could not be imported. Verify whether the file format is .xlsx or the data is structured in a date, name format.')
+        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except Exception as err:
         print(err.args)
