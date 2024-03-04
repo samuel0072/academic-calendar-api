@@ -34,7 +34,7 @@ def create_event(request):
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])    
-def list_event(request, id):
+def list_events(request, id):
     #busca exata por calendário acadêmico
     serializer = None
     try:
