@@ -57,8 +57,6 @@ class EventsImporter(BaseEventImporter):
             is_start_date_null = row[self.START_DATE_COLUMN] is NaT
             is_end_date_null = row[self.END_DATE_COLUMN] is NaT
 
-            print(is_end_date_null, row[self.DURATION_COLUMN])
-
             if is_start_date_null and math.isnan(last_period) :
                 raise AcademicCalendarException(_('Could not import row %(row_index)s. '\
                                                   'The start_date_column value must not be empty when the previous row\'s '\
