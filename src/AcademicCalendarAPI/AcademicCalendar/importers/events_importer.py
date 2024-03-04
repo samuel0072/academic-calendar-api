@@ -1,4 +1,5 @@
 import datetime
+import math
 
 from .base_importer import BaseEventImporter
 from AcademicCalendar.models import Event, Organization, AcademicCalendar
@@ -49,22 +50,24 @@ class EventsImporter(BaseEventImporter):
     def import_event(self):
         
         events = []
-        last_period = NA
+        last_period = math.nan
         last_end_date = NaT
 
         for i, row in self.df.iterrows():
-            is_start_date_null = row[self.START_DATE_COLUMN] == NaT
-            is_end_date_null = row[self.END_DATE_COLUMN] == NaT
+            is_start_date_null = row[self.START_DATE_COLUMN] is NaT
+            is_end_date_null = row[self.END_DATE_COLUMN] is NaT
 
-            if is_start_date_null and (last_period == NA) :
-                raise AcademicCalendarException(_('Could not import row %(row_index)s. \
-                                                  The start_date_column value must not be empty when the former row\'s \
-                                                  period_column value is empty' % {"row_index": i}))
+            print(is_end_date_null, row[self.DURATION_COLUMN])
+
+            if is_start_date_null and math.isnan(last_period) :
+                raise AcademicCalendarException(_('Could not import row %(row_index)s. '\
+                                                  'The start_date_column value must not be empty when the previous row\'s '\
+                                                  'period_column value is empty' % {"row_index": i + 1}))
             
-            if is_end_date_null and (row[self.DURATION_COLUMN] == NA) :
-                raise AcademicCalendarException(_('Could not import row %(row_index)s. \
-                                                  The end_date_column value must not be empty when the row\'s \
-                                                  duration_column value is empty' % {"row_index": i}))
+            if is_end_date_null and math.isnan(row[self.DURATION_COLUMN]) :
+                raise AcademicCalendarException(_('Could not import row %(row_index)s. '\
+                                                  'The end_date_column value must not be empty when the row\'s '\
+                                                  'duration_column value is empty' % {"row_index": i + 1}))
 
             event = Event()
             event.description = row[self.DESCRIPTION_COLUMN]
@@ -73,17 +76,22 @@ class EventsImporter(BaseEventImporter):
             event.organization = self.organization
 
             if is_start_date_null:
-                event.start_date = last_end_date + datetime.timedelta(days = last_period)
+                event.start_date = last_end_date + datetime.timedelta(days = last_period) 
             else:
-                event.start_date = row[self.START_DATE_COLUMN]
+                event.start_date = row[self.START_DATE_COLUMN].date()
 
             last_period = row[self.PERIOD_COLUMN]
 
             if is_end_date_null:
-                event.end_date = event.start_date + datetime.timedelta(days = row[self.DURATION_COLUMN])
+                event.end_date = event.start_date + datetime.timedelta(days = (row[self.DURATION_COLUMN] - 1)) # menos 1 pois a data inicial também conta na duração
             else:
-                event.end_date = row[self.END_DATE_COLUMN]
-
+                event.end_date = row[self.END_DATE_COLUMN].date()
+        
             last_end_date = event.end_date
 
             events.append(event)
+
+        for event in events:
+            event.save()
+
+        return events

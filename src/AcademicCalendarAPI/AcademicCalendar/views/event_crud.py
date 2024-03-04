@@ -5,6 +5,7 @@ from json.decoder import JSONDecodeError
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
 from AcademicCalendar.importers.holiday_importer import HolidayImporter
+from AcademicCalendar.importers.events_importer import EventsImporter
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 
 from django.http import JsonResponse
@@ -101,8 +102,6 @@ def import_regional_holidays(request):
         print(e.args)
         return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
     
-    
-
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])   
@@ -137,3 +136,49 @@ def import_national_holidays(request):
         print(type(err))
         return Response({"errors": [_('An unexpected error ocurred.')]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
     
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])   
+def import_events(request):
+    try:
+        if not("academic_calendar_id" in request.data):
+            raise AcademicCalendarException(_("The academic calendar id field is required"))
+        
+        parsed_id = int(request.data["academic_calendar_id"])
+
+        if(parsed_id > sys.maxsize):
+            raise Exception(_("The passed id is not valid"))
+        
+        if len(request.FILES) == 0:
+            raise AcademicCalendarException(_('No file were provided.'))
+        
+        if not("file" in request.FILES):
+            raise AcademicCalendarException(_('The \'file\' parameter is required.'))
+        
+        if len(request.FILES) > 1:
+            raise AcademicCalendarException(_('You should provide one file at a time'))
+        
+        academic_calendar = AcademicCalendar.objects.filter(id = parsed_id, organization = request.user.organization).first()
+
+        if academic_calendar is None:
+            raise AcademicCalendarException(_('Could not find the academic calendar.'))
+
+        importer = EventsImporter(request.FILES["file"], request.user.organization, academic_calendar)
+        imported_events = importer.import_event()
+
+        serializer = EventSerializer(data = imported_events, many=True)
+        serializer.is_valid()
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+    
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except ValueError as err:
+        print(err.args)
+        error = _('This file could not be imported. Verify if the file format is .xlsx.')
+        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")

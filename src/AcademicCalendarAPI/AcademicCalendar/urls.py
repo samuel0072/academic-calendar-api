@@ -12,5 +12,6 @@ urlpatterns = [
     path('semester/create', semester.create_semester, name='create_semester'),
     path('search_calendar', academic_calendar_crud.search_calendar, name='search_calendar'),
     path('import_regional_holidays', event_crud.import_regional_holidays, name='import_regional_holidays'),
-    path('import_national_holidays', event_crud.import_national_holidays, name='import_national_holidays')
+    path('import_national_holidays', event_crud.import_national_holidays, name='import_national_holidays'),
+    path('import_events', event_crud.import_events, name='import_events')
 ]
