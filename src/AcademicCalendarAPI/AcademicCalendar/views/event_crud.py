@@ -7,6 +7,7 @@ from AcademicCalendar.serializers import *
 from AcademicCalendar.importers.holiday_importer import HolidayImporter
 from AcademicCalendar.importers.events_importer import EventsImporter
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
+from AcademicCalendar.utils import validate_id
 
 from django.http import JsonResponse
 
@@ -182,3 +183,32 @@ def import_events(request):
     except Exception as e:
         print(e.args)
         return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  
+def edit_event(request, id):
+    try:
+        parsed_id = validate_id(id)
+
+        event = Event.objects.get(pk=parsed_id, organization = request.user.organization)
+        
+        request.data["organization"] = request.user.organization.id
+        
+        serializer = EventSerializer(event, data = request.data )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+        else:
+            raise AcademicCalendarException(serializer.errors)
+        
+    except Event.DoesNotExist:
+        return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
