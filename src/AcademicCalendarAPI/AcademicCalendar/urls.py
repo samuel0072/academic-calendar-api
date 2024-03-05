@@ -14,5 +14,6 @@ urlpatterns = [
     path('import_regional_holidays', event_crud.import_regional_holidays, name='import_regional_holidays'),
     path('import_national_holidays', event_crud.import_national_holidays, name='import_national_holidays'),
     path('import_events', event_crud.import_events, name='import_events'),
-    path('event/<int:id>/edit', event_crud.edit_event, name='edit_event')
+    path('event/<int:id>/edit', event_crud.edit_event, name='edit_event'),
+    path('event/<int:id>/delete', event_crud.delete_event, name='delete_event')
 ]
