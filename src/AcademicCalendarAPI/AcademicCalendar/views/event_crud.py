@@ -45,7 +45,10 @@ def list_events(request, id):
         if(parsed_id > sys.maxsize):
             raise Exception(_("The passed id is not valid"))
         
-        events = Event.objects.filter(organization = request.user.organization, academic_calendar__id=parsed_id).order_by('start_date')
+        events = Event.objects.filter(organization = request.user.organization, 
+                                      academic_calendar__id = parsed_id, 
+                                      deleted_at__isnull = True, 
+                                      academic_calendar__deleted_at__isnull = True).order_by('start_date')
 
         serializer = EventSerializer(data = events, many=True)
         serializer.is_valid()
@@ -77,7 +80,7 @@ def import_regional_holidays(request):
         if len(request.FILES) > 1:
             raise AcademicCalendarException(_('You should provide one file at a time'))
         
-        campi = Campus.objects.filter(id__in = campi, organization = request.user.organization)
+        campi = Campus.objects.filter(id__in = campi, organization = request.user.organization, deleted_at__isnull = True)
 
         if len(campi) == 0:
             raise AcademicCalendarException(_('You should provide at least 1 campus from your organization.'))
@@ -160,7 +163,7 @@ def import_events(request):
         if len(request.FILES) > 1:
             raise AcademicCalendarException(_('You should provide one file at a time'))
         
-        academic_calendar = AcademicCalendar.objects.filter(id = parsed_id, organization = request.user.organization).first()
+        academic_calendar = AcademicCalendar.objects.filter(id = parsed_id, organization = request.user.organization, deleted_at__isnull = True).first()
 
         if academic_calendar is None:
             raise AcademicCalendarException(_('Could not find the academic calendar.'))
@@ -192,7 +195,7 @@ def edit_event(request, id):
     try:
         parsed_id = validate_id(id)
 
-        event = Event.objects.get(pk=parsed_id, organization = request.user.organization)
+        event = Event.objects.get(pk=parsed_id, organization = request.user.organization, deleted_at__isnull = True)
         
         request.data["organization"] = request.user.organization.id
         

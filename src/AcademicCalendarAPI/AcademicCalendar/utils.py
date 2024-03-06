@@ -38,7 +38,7 @@ def count_specific_weekdays_between_two_dates(weekday: int, start_date: datetime
 
 def count_non_school_days_semester(semester: Semester) -> int:
     non_school_days = {}
-    campi = Campus.objects.filter(organization = semester.organization)
+    campi = Campus.objects.filter(organization = semester.organization, deleted_at__isnull = True)
     
     semester_total_days = (semester.end_date - semester.start_date).days + 1
     sundays_count = count_specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, semester.start_date, semester.end_date)
@@ -52,12 +52,13 @@ def count_non_school_days_semester(semester: Semester) -> int:
 
 def non_school_days_in_campus(campus: Campus, start_date: datetime.date, end_date: datetime.date) -> set:
     non_school_days = []
-    campus_non_school_events = Event.objects.filter(campi__id = campus.id, start_date__gte = start_date, end_date__lte = end_date).exclude(label=Event.SCHOOL_DAYS)
+    campus_non_school_events = Event.objects.filter(campi__id = campus.id, start_date__gte = start_date, end_date__lte = end_date, deleted_at__isnull = True).exclude(label=Event.SCHOOL_DAYS)
     national_holidays = Event.objects.filter(
         start_date__gte = start_date, 
         end_date__lte = end_date, 
         label=Event.HOLIDAY, 
-        organization = campus.organization
+        organization = campus.organization,
+        deleted_at__isnull = True
         )
     non_school_days_qs = campus_non_school_events.union(national_holidays)
 

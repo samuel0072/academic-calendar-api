@@ -63,6 +63,9 @@ class EventSerializer(serializers.ModelSerializer):
         if data["academic_calendar"] != None:
             if data["academic_calendar"].organization.id != data["organization"].id:
                 raise serializers.ValidationError(_("You don't have permission to create events on this calendar"))
+            
+            if data["academic_calendar"].deleted_at != None:
+                raise serializers.ValidationError(_("Could not find the academic calendar."))
         
         for campus in data["campi"]:
             if campus.organization.id != data["organization"].id:
@@ -88,6 +91,9 @@ class SemesterSerializer(serializers.ModelSerializer):
         
         if data["academic_calendar"].organization.id != data["organization"].id:
             raise serializers.ValidationError(_("You don't have permission to create semesters on this calendar"))
+            
+        if data["academic_calendar"].deleted_at != None:
+            raise serializers.ValidationError(_("Could not find the academic calendar."))
         
         #Verificar se um semestre ta começando ou finalizando no meio de outro
         semesters = Semester.objects.filter(academic_calendar = data["academic_calendar"]).filter( 

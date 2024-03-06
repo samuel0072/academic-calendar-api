@@ -1,7 +1,8 @@
 import sys
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
-from AcademicCalendar.utils import count_school_days
+from AcademicCalendar.utils import count_school_days, validate_id
+from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 
 from django.http import JsonResponse
 from django.utils.translation import gettext as _
@@ -34,18 +35,22 @@ def create_calendar(request):
 def school_days_count(request, id):
     
     try:
-        parsed_id = int(id)
-
-        if(parsed_id > sys.maxsize):
-            raise Exception(_("The passed id is not valid"))
+        parsed_id = validate_id(id)
         
-        calendar = AcademicCalendar.objects.filter(id=parsed_id, organization__id = request.user.organization.id).get()
+        calendar = AcademicCalendar.objects.get(id=parsed_id, organization__id = request.user.organization.id, deleted_at__isnull = True)
 
         response_data = count_school_days(calendar)
         return Response(response_data, status=status.HTTP_200_OK, content_type="aplication/json")
 
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except AcademicCalendar.DoesNotExist:
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
     except Exception as e:
-        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
