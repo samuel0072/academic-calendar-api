@@ -95,6 +95,10 @@ class SemesterSerializer(serializers.ModelSerializer):
         if data["academic_calendar"].deleted_at != None:
             raise serializers.ValidationError(_("Could not find the academic calendar."))
         
+        instance_id = None
+        if self.instance != None:
+            instance_id = self.instance.id
+        
         #Verificar se um semestre ta começando ou finalizando no meio de outro
         semesters = Semester.objects.filter(academic_calendar = data["academic_calendar"]).filter( 
                 Q(
@@ -106,7 +110,7 @@ class SemesterSerializer(serializers.ModelSerializer):
                     start_date__lte = data['end_date'],
                     end_date__gte = data['end_date']
                 )
-            ).count()
+            ).exclude(id=instance_id).count()
         
         if semesters > 0:
             raise serializers.ValidationError(_("A semester can't start or end during another semester"))
