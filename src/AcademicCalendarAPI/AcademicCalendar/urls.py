@@ -16,5 +16,6 @@ urlpatterns = [
     path('import_events', event_crud.import_events, name='import_events'),
     path('event/<int:id>/edit', event_crud.edit_event, name='edit_event'),
     path('event/<int:id>/delete', event_crud.delete_event, name='delete_event'),
-    path('semester/<int:id>/edit', semester.edit_semester, name='edit_semester')
+    path('semester/<int:id>/edit', semester.edit_semester, name='edit_semester'),
+    path('semester/<int:id>/delete', semester.delete_semester, name='delete_semester'),
 ]

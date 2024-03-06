@@ -14,7 +14,7 @@ def count_school_days(calendar: AcademicCalendar) -> dict:
 
     sundays_count = count_specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, calendar.start_date, calendar.end_date)
 
-    semesters = Semester.objects.filter(academic_calendar = calendar)
+    semesters = Semester.objects.filter(academic_calendar = calendar, deleted_at__isnull = True)
 
     counting["total_days"] = total_days
     counting["sundays"] = sundays_count
@@ -50,6 +50,7 @@ def count_non_school_days_semester(semester: Semester) -> int:
     
     return non_school_days
 
+#TODO: na linha 56, ele filtra os eventos que estão somente associados ao campus, mas pode existir mts eventos que não estão.
 def non_school_days_in_campus(campus: Campus, start_date: datetime.date, end_date: datetime.date) -> set:
     non_school_days = []
     campus_non_school_events = Event.objects.filter(campi__id = campus.id, start_date__gte = start_date, end_date__lte = end_date, deleted_at__isnull = True).exclude(label=Event.SCHOOL_DAYS)
