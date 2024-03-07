@@ -18,4 +18,8 @@ urlpatterns = [
     path('event/<int:id>/delete', event_crud.delete_event, name='delete_event'),
     path('semester/<int:id>/edit', semester.edit_semester, name='edit_semester'),
     path('semester/<int:id>/delete', semester.delete_semester, name='delete_semester'),
+    path('campus/create', campus.create_campus, name='create_campus'),
+    path('campus/list', campus.list_campus, name='list_campus'),
+    path('campus/<int:id>/edit', campus.edit_campus, name='edit_campus'),
+    path('campus/<int:id>/delete', campus.delete_campus, name='delete_campus'),
 ]
