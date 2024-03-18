@@ -10,6 +10,7 @@ class BaseEventExporter(BaseExporter):
         self.df = None
         self.organization = organization
         self.events_queryset = events
+        self.event_file = None
 
         self.START_DATE_COLUMN  = "data_inicio" if not("start_date_column" in kwargs) else kwargs["start_date_column"]
         self.DESCRIPTION_COLUMN = "descricao" if not("description_column" in kwargs) else kwargs["description_column"]

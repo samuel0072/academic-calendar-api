@@ -8,12 +8,14 @@ class CSVEventExporter(BaseEventExporter):
         super().__init__(organization, events, **kwargs)
 
     def export(self):
-        event_file = EventFile(format = EventFile.TYPE_CSV, organization = self.organization)
+        self.construct_df()
 
-        event_file.save()
+        self.event_file = EventFile(format = EventFile.TYPE_CSV, organization = self.organization)
 
-        event_file.file_path = "{0}/{1}{2}{3}".format(settings.BASE_DIR, settings.MEDIA_ROOT, event_file.id, event_file.format)
+        self.event_file.save()
 
-        self.df.to_csv(event_file.file_path, date_format = "%d/%m/%Y", index=False)
+        self.event_file.file_path = "{0}/{1}{2}{3}".format(settings.BASE_DIR, settings.MEDIA_ROOT, self.event_file.id, self.event_file.format)
 
-        event_file.save()
+        self.df.to_csv(self.event_file.file_path, date_format = "%d/%m/%Y", index=False)
+
+        self.event_file.save()
