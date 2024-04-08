@@ -1,12 +1,14 @@
-import sys
+import os
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
 from AcademicCalendar.utils import count_school_days, validate_id
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 from AcademicCalendar.exporters.csv_event_exporter import CSVEventExporter
 
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext as _
+from django.conf import settings
+from django.urls import reverse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework import status
@@ -104,10 +106,41 @@ def export_academic_calendar_events_to_csv(request, id):
         exporter = CSVEventExporter(request.user.organization, events)
         exporter.export()
 
-        return Response(exporter.event_file.file_path, status=status.HTTP_201_CREATED)
+        response_objects = {
+            "url": exporter.file_url
+        }
+
+        return Response(response_objects, status=status.HTTP_201_CREATED)
         
     except AcademicCalendar.DoesNotExist:
         return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def download_event_file(request, id):
+    try:
+        parsed_id = validate_id(id)
+
+        file = EventFile.objects.get(pk=parsed_id, organization = request.user.organization)
+
+        file_path = os.path.join(settings.MEDIA_ROOT, file.file_path)
+        
+        if os.path.exists(file_path):
+            return FileResponse(open(file_path, 'rb'), as_attachment=True)
+        
+        else:
+            raise AcademicCalendarException(_('Could not retrieve the especified file. It may be deleted.'))
+        
+    except EventFile.DoesNotExist:
+        return Response({"errors": [_('Could not find the file.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except AcademicCalendarException as err:
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
