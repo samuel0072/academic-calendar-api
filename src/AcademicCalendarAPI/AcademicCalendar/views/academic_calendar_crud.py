@@ -4,6 +4,7 @@ from AcademicCalendar.serializers import *
 from AcademicCalendar.utils import count_school_days, validate_id
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 from AcademicCalendar.exporters.csv_event_exporter import CSVEventExporter
+from AcademicCalendar.exporters.excel_event_exporter import ExcelEventExporter
 
 from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext as _
@@ -141,6 +142,39 @@ def download_event_file(request, id):
     
     except AcademicCalendarException as err:
         return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])      
+def export_academic_calendar_events_to_excel(request, id):
+    try:
+        parsed_id = validate_id(id)
+
+        calendar = AcademicCalendar.objects.get(pk=parsed_id, organization = request.user.organization)
+
+        calendar_events = Event.objects.filter(academic_calendar = calendar, organization = request.user.organization)
+        holidays = Event.objects.filter(label__in = [Event.HOLIDAY, Event.REGIONAL_HOLIDAY], 
+                                        organization = request.user.organization, 
+                                        start_date__gte = calendar.start_date, 
+                                        start_date__lte = calendar.end_date)
+        
+        events = calendar_events.union(holidays)
+        
+        exporter = ExcelEventExporter(request.user.organization, events)
+        exporter.export()
+
+        response_objects = {
+            "url": exporter.file_url
+        }
+
+        return Response(response_objects, status=status.HTTP_201_CREATED)
+        
+    except AcademicCalendar.DoesNotExist:
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
