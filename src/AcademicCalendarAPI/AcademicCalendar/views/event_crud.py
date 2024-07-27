@@ -48,7 +48,13 @@ def list_events(request, id):
         events = Event.objects.filter(organization = request.user.organization, 
                                       academic_calendar__id = parsed_id, 
                                       deleted_at__isnull = True, 
-                                      academic_calendar__deleted_at__isnull = True).order_by('start_date')
+                                      academic_calendar__deleted_at__isnull = True)
+        
+        holidays = Event.objects.filter(organization = request.user.organization, 
+                                        label__in = [Event.HOLIDAY, Event.REGIONAL_HOLIDAY],
+                                        deleted_at__isnull = True)
+        
+        events = events.union(holidays).order_by('start_date')
 
         serializer = EventSerializer(data = events, many=True)
         serializer.is_valid()
