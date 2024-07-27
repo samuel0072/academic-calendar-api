@@ -8,6 +8,7 @@ urlpatterns = [
     path('calendar/create', academic_calendar_crud.create_calendar, name='create_calendar'),
     path('event/create', event_crud.create_event, name='create_event'),
     path('calendar/<int:id>/events', event_crud.list_events, name='list_calendar_events'),
+    #falta uma rota de listar feriados nacionais e regionais da organização
     path('calendar/<int:id>/export/csv', academic_calendar_crud.export_academic_calendar_events_to_csv, name='export_academic_calendar_events_to_csv'),
     path('calendar/<int:id>/export/excel', academic_calendar_crud.export_academic_calendar_events_to_excel, name='export_academic_calendar_events_to_excel'),
     path('<int:id>/school_days_count', academic_calendar_crud.school_days_count, name='school_days_count'),

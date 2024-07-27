@@ -57,7 +57,7 @@ class Event(TimeStampedModel):
     end_date = models.DateField(blank=True, null=True)
     description = models.TextField(blank=True, null=True, max_length=500)
     label = models.CharField(max_length=3, choices=LABEL_TYPES)
-    hexadecimal_color = models.TextField(max_length=6, default="FFFFFF")
+    hexadecimal_color = models.TextField(max_length=7, default="#FFFFFF")
     academic_calendar = models.ForeignKey(AcademicCalendar, on_delete=models.PROTECT, blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.PROTECT)
     campi = models.ManyToManyField(Campus, related_name='special_date_campus', blank=True)
