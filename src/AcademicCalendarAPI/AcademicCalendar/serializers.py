@@ -45,14 +45,16 @@ class EventSerializer(serializers.ModelSerializer):
         return value
     
     def validate(self, data):
+        errors = {}
+        
         if(data['end_date'] < data['start_date']):
-           raise serializers.ValidationError(_("End date has to be after start date"))
+           errors['end_date'] = _("End date has to be after start date")
         
         if data["label"] != Event.HOLIDAY and len(data["campi"]) == 0:
-            raise serializers.ValidationError(_("A campus must be provided for this event"))
+            errors['campi'] = _("A campus must be provided for this event")
         
         if (data["label"] == Event.NONSCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
-            raise serializers.ValidationError(_("Tha start date isn't a saturday"))
+            errors['start_date'] = _("This start date isn't a saturday")
         
         if(data["label"] == Event.HOLIDAY):
             data["campi"] = []
@@ -62,14 +64,17 @@ class EventSerializer(serializers.ModelSerializer):
             
         if data["academic_calendar"] != None:
             if data["academic_calendar"].organization.id != data["organization"].id:
-                raise serializers.ValidationError(_("You don't have permission to create events on this calendar"))
+                errors['academic_calendar'] = _("You don't have permission to create events on this calendar")
             
             if data["academic_calendar"].deleted_at != None:
-                raise serializers.ValidationError(_("Could not find the academic calendar."))
+                errors['academic_calendar'] = _("Could not find the academic calendar.")
         
         for campus in data["campi"]:
             if campus.organization.id != data["organization"].id:
-                raise serializers.ValidationError(_("You don't have permission to create events on this campus: %(name)s" % {"name": campus.name} ))
+                errors['academic_calendar'] = _("You don't have permission to create events on this campus: %(name)s" % {"name": campus.name} )
+            
+        if(len(errors) > 0):
+            raise serializers.ValidationError(errors)
         
         return data
     
