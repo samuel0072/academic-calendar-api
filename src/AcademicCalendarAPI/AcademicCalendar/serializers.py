@@ -40,7 +40,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     def validate_hexadecimal_color(self, value):
         if re.search(r"#([0-9a-fA-F]){6}", value) == None:
-            raise serializers.ValidationError(_("Color has to be a number in a hexadecimal format"))
+            raise serializers.ValidationError({"color" : _("Color has to be a number in a hexadecimal format")})
         
         return value
     
