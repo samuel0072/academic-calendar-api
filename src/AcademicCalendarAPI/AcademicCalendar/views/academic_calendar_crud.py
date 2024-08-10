@@ -179,3 +179,23 @@ def export_academic_calendar_events_to_excel(request, id):
     except Exception as e:
         print(e.args)
         return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def get_calendar_detail(request, id):
+    try:
+        parsed_id = validate_id(id)
+
+        calendar = AcademicCalendar.objects.get(pk=parsed_id, organization = request.user.organization)
+
+        calendar_serializer = CalendarSerializer(calendar)
+
+        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+        
+    except AcademicCalendar.DoesNotExist:
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")

@@ -5,6 +5,7 @@ from AcademicCalendar.views import *
 app_name = 'AcademicCalendar'
 
 urlpatterns = [
+    path('calendar/detail/<int:id>', academic_calendar_crud.get_calendar_detail, name='get_calendar_detail'),
     path('calendar/create', academic_calendar_crud.create_calendar, name='create_calendar'),
     path('event/create', event_crud.create_event, name='create_event'),
     path('calendar/<int:id>/events', event_crud.list_events, name='list_calendar_events'),
