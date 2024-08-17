@@ -204,7 +204,10 @@ def edit_event(request, id):
         event = Event.objects.get(pk=parsed_id, organization = request.user.organization, deleted_at__isnull = True)
         
         request.data["organization"] = request.user.organization.id
-        request.data["academic_calendar"] = event.academic_calendar.id
+
+        if event.label not in [Event.HOLIDAY, Event.REGIONAL_HOLIDAY]:
+            if event.academic_calendar != None:
+                request.data["academic_calendar"] = event.academic_calendar.id
         
         serializer = EventSerializer(event, data = request.data )
         
@@ -218,11 +221,11 @@ def edit_event(request, id):
         return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response(err.args[0], status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
-    # except Exception as e:
-    #     print(e.args)
-    #     return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
     
 @api_view(['DELETE'])
 @authentication_classes([JWTAuthentication])

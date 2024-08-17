@@ -46,7 +46,9 @@ class EventSerializer(serializers.ModelSerializer):
     
     def validate(self, data):
         errors = {}
-        
+        if len(data['description']) == 0:
+            errors['description'] = _("An empty description is not valid")
+
         if(data['end_date'] < data['start_date']):
            errors['end_date'] = _("End date has to be after start date")
         
