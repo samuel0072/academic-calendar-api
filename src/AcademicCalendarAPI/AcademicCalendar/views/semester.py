@@ -42,7 +42,7 @@ def edit_semester(request, id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
         else:
-            raise AcademicCalendarException(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         
     except Semester.DoesNotExist:
         return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
@@ -67,6 +67,26 @@ def delete_semester(request, id):
         semester.save()   
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+        
+    except Semester.DoesNotExist:
+        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def get_semester_detail(request, id):
+    try:
+        parsed_id = validate_id(id)
+
+        semester = Semester.objects.get(pk=parsed_id, organization = request.user.organization)
+
+        semester_serializer = SemesterSerializer(semester)
+
+        return Response(semester_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
         
     except Semester.DoesNotExist:
         return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
