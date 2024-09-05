@@ -93,8 +93,9 @@ class SemesterSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
+        errors = {}
         if(data['end_date'] < data['start_date']):
-           raise serializers.ValidationError(_("End date has to be after start date"))
+           errors['end_date'] = _("End date has to be after start date")
         
         if data["academic_calendar"].organization.id != data["organization"].id:
             raise serializers.ValidationError(_("You don't have permission to create semesters on this calendar"))
@@ -121,6 +122,9 @@ class SemesterSerializer(serializers.ModelSerializer):
         
         if semesters > 0:
             raise serializers.ValidationError(_("A semester can't start or end during another semester"))
+        
+        if len(errors) > 0:
+            raise serializers.ValidationError(errors)
         
         return data
     
