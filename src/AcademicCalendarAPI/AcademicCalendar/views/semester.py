@@ -82,7 +82,7 @@ def get_semester_detail(request, id):
     try:
         parsed_id = validate_id(id)
 
-        semester = Semester.objects.get(pk=parsed_id, organization = request.user.organization)
+        semester = Semester.objects.get(pk=parsed_id, organization = request.user.organization, deleted_at__isnull = True)
 
         semester_serializer = SemesterSerializer(semester)
 
