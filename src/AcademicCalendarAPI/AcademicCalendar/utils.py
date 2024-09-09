@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 
 SUNDAY_WEEK_DAY = 6
 
-def count_school_days(calendar: AcademicCalendar) -> dict:
+def count_school_days(calendar: AcademicCalendar):
     counting = {"total_days": 0, "sundays": 0}
     sem= {}
     total_days = (calendar.end_date - calendar.start_date).days + 1
@@ -19,14 +19,16 @@ def count_school_days(calendar: AcademicCalendar) -> dict:
     counting["total_days"] = total_days
     counting["sundays"] = sundays_count
 
+    sem = []
     for semester in semesters:
-        sem[semester.description] = count_non_school_days_semester(semester)
+        sem.append({ "description": semester.description, "campi_school_days_count":  count_non_school_days_semester(semester)})
+        #sem[semester.description] = count_non_school_days_semester(semester)
     
     counting["semesters"] = sem
 
     return counting
 
-def count_specific_weekdays_between_two_dates(weekday: int, start_date: datetime.date, end_date: datetime.date) -> int:
+def count_specific_weekdays_between_two_dates(weekday: int, start_date: datetime.date, end_date: datetime.date):
     weekday_count = 0
     actual_date = start_date + datetime.timedelta(days=weekday - start_date.weekday())
 
@@ -36,22 +38,22 @@ def count_specific_weekdays_between_two_dates(weekday: int, start_date: datetime
     
     return weekday_count
 
-def count_non_school_days_semester(semester: Semester) -> int:
-    non_school_days = {}
+def count_non_school_days_semester(semester: Semester):
     campi = Campus.objects.filter(organization = semester.organization, deleted_at__isnull = True)
     
     semester_total_days = (semester.end_date - semester.start_date).days + 1
     sundays_count = count_specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, semester.start_date, semester.end_date)
     available_school_days = semester_total_days - sundays_count
     
+    campi_school_days = []
     for campus in campi:
         campus_non_school_day = non_school_days_in_campus(campus, semester.start_date, semester.end_date)
-        non_school_days[campus.id] = available_school_days - len(campus_non_school_day)
+        campi_school_days.append({ "name": campus.name, "school_days_count": available_school_days - len(campus_non_school_day) })
     
-    return non_school_days
+    return campi_school_days
 
 #TODO: na linha 56, ele filtra os eventos que estão somente associados ao campus, mas pode existir mts eventos que não estão.
-def non_school_days_in_campus(campus: Campus, start_date: datetime.date, end_date: datetime.date) -> set:
+def non_school_days_in_campus(campus: Campus, start_date: datetime.date, end_date: datetime.date):
     non_school_days = []
     campus_non_school_events = Event.objects.filter(campi__id = campus.id, start_date__gte = start_date, end_date__lte = end_date, deleted_at__isnull = True).exclude(label=Event.SCHOOL_DAYS)
     national_holidays = Event.objects.filter(
