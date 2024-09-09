@@ -108,7 +108,11 @@ class SemesterSerializer(serializers.ModelSerializer):
             instance_id = self.instance.id
         
         #Verificar se um semestre ta começando ou finalizando no meio de outro
-        semesters = Semester.objects.filter(academic_calendar = data["academic_calendar"]).filter( 
+        semesters = Semester.objects.filter(
+            academic_calendar = data["academic_calendar"],
+            deleted_at__isnull = True, 
+            academic_calendar__deleted_at__isnull = True
+            ).filter( 
                 Q(
                     start_date__lte = data['start_date'], 
                     end_date__gte = data['start_date']
