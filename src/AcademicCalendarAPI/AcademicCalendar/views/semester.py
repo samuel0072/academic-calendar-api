@@ -94,3 +94,26 @@ def get_semester_detail(request, id):
     except Exception as e:
         print(e.args)
         return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+    
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def list_semesters(request, id):
+    try:
+        parsed_id = int(id)
+
+        if(parsed_id > sys.maxsize):
+            raise Exception(_("The passed id is not valid"))
+        
+        semesters = Semester.objects.filter(organization = request.user.organization, 
+                                      academic_calendar__id = parsed_id, 
+                                      deleted_at__isnull = True, 
+                                      academic_calendar__deleted_at__isnull = True)
+        
+        serializer = SemesterSerializer(data = semesters, many=True)
+        serializer.is_valid()
+        
+        return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+
+    except Exception as e:
+        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
