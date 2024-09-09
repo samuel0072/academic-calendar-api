@@ -48,7 +48,7 @@ def count_non_school_days_semester(semester: Semester):
     campi_school_days = []
     for campus in campi:
         campus_non_school_day = non_school_days_in_campus(campus, semester.start_date, semester.end_date)
-        campi_school_days.append({ "name": campus.name, "school_days_count": available_school_days - len(campus_non_school_day) })
+        campi_school_days.append({ "id": campus.id, "name": campus.name, "school_days_count": available_school_days - len(campus_non_school_day) })
     
     return campi_school_days
 
