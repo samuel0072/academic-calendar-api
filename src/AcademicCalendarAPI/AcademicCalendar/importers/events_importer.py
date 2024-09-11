@@ -2,7 +2,7 @@ import datetime
 import math
 
 from .base_importer import BaseEventImporter
-from AcademicCalendar.models import Event, Organization, AcademicCalendar
+from AcademicCalendar.models import Event, Organization, AcademicCalendar, Campus
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 
 from pandas import read_excel, to_datetime, NaT, to_numeric, NA
@@ -16,6 +16,7 @@ class EventsImporter(BaseEventImporter):
 
         self.organization = organization
         self.academic_calendar = academic_calendar
+        self.campi = Campus.objects.filter(organization = organization, deleted_at__isnull = True)
 
         self.START_DATE_COLUMN  = "data_inicio" if not("start_date_column" in kwargs) else kwargs["start_date_column"]
         self.DESCRIPTION_COLUMN = "descricao" if not("description_column" in kwargs) else kwargs["description_column"]
@@ -90,6 +91,8 @@ class EventsImporter(BaseEventImporter):
             events.append(event)
 
         for event in events:
+            event.save()
+            event.campi.set(self.campi) 
             event.save()
 
         return events

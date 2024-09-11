@@ -150,15 +150,11 @@ def import_national_holidays(request):
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])   
-def import_events(request):
+def import_events(request, id):
     try:
-        if not("academic_calendar_id" in request.data):
-            raise AcademicCalendarException(_("The academic calendar id field is required"))
-        
-        parsed_id = int(request.data["academic_calendar_id"])
 
-        if(parsed_id > sys.maxsize):
-            raise Exception(_("The passed id is not valid"))
+        if(id > sys.maxsize):
+            raise AcademicCalendarException(_("The passed id is not valid"))
         
         if len(request.FILES) == 0:
             raise AcademicCalendarException(_('No file were provided.'))
@@ -169,10 +165,7 @@ def import_events(request):
         if len(request.FILES) > 1:
             raise AcademicCalendarException(_('You should provide one file at a time'))
         
-        academic_calendar = AcademicCalendar.objects.filter(id = parsed_id, organization = request.user.organization, deleted_at__isnull = True).first()
-
-        if academic_calendar is None:
-            raise AcademicCalendarException(_('Could not find the academic calendar.'))
+        academic_calendar = AcademicCalendar.objects.get(id = id, organization = request.user.organization, deleted_at__isnull = True)
 
         importer = EventsImporter(request.FILES["file"], request.user.organization, academic_calendar)
         imported_events = importer.import_event()
@@ -182,13 +175,16 @@ def import_events(request):
         
         return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
     
+    except AcademicCalendar.DoesNotExist as err:
+        return Response({"errors": _('Could not find the academic calendar.') }, status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
     except AcademicCalendarException as err:
         return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
     
     except ValueError as err:
         print(err.args)
         error = _('This file could not be imported. Verify if the file format is .xlsx.')
-        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": [error]}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
