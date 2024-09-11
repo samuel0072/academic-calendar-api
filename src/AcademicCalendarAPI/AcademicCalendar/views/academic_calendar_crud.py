@@ -9,7 +9,6 @@ from AcademicCalendar.exporters.excel_event_exporter import ExcelEventExporter
 from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext as _
 from django.conf import settings
-from django.urls import reverse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework import status
@@ -17,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination 
+
 
 paginator = PageNumberPagination()
 
@@ -130,9 +130,14 @@ def download_event_file(request, id):
         file = EventFile.objects.get(pk=parsed_id, organization = request.user.organization)
 
         file_path = os.path.join(settings.MEDIA_ROOT, file.file_path)
+
+        content_types = {}
+        content_types[EventFile.TYPE_EXCEL] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        content_types[EventFile.TYPE_CSV] = 'text/csv'
+        content_types[EventFile.TYPE_PDF] = 'application/pdf'
         
         if os.path.exists(file_path):
-            return FileResponse(open(file_path, 'rb'), as_attachment=True)
+            return FileResponse(open(file_path, 'rb'), as_attachment=True, content_type = content_types[file.format])
         
         else:
             raise AcademicCalendarException(_('Could not retrieve the especified file. It may be deleted.'))
