@@ -54,13 +54,13 @@ def edit_campus(request, id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
         else:
-            raise AcademicCalendarException(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json") 
         
     except Campus.DoesNotExist:
         return Response({"errors": [_('Could not find the campus.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response(err.args, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
