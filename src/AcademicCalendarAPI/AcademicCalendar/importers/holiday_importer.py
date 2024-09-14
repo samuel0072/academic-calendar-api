@@ -43,6 +43,7 @@ class HolidayImporter(BaseEventImporter):
         campi_id = [campus.id for campus in self.campi]
         
         for i, row in self.df.iterrows():
+            #TODO: Tem que botar a validação de comprimento do nome
             event = Event(start_date=row[self.DATE_COLUMN].date(), description=row[self.NAME_COLUMN])
             event.label = self.event_label
             event.organization = self.organization
