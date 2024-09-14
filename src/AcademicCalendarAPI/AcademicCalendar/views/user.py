@@ -53,3 +53,10 @@ def create_user(request):
     except Exception as e:
         print(e.args)
         return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def profile(request): 
+    serializer = UserSerializer(request.user)
+    return JsonResponse(serializer.data, status=status.HTTP_200_OK)
