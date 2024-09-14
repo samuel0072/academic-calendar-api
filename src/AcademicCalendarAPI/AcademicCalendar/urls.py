@@ -32,4 +32,5 @@ urlpatterns = [
     path('user/create', user.create_user, name='create_user'),
     path('user/profile', user.profile, name='user_profile'),
     path('user/<int:id>/delete', user.delete_user, name='delete_user'),
+    path('user/list', user.list_users, name='list_usesr'),
 ]
