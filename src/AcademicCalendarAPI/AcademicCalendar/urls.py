@@ -29,4 +29,5 @@ urlpatterns = [
     path('campus/<int:id>/edit', campus.edit_campus, name='edit_campus'),
     path('campus/<int:id>/delete', campus.delete_campus, name='delete_campus'),
     path('event_file/<int:id>/download/', academic_calendar_crud.download_event_file, name='download_event_file'),
+    path('user/create', user.create_user, name='create_user'),
 ]

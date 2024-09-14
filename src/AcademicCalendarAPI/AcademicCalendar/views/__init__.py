@@ -1,1 +1,1 @@
-__all__ = ['academic_calendar_crud', 'event_crud', 'semester', 'campus']
+__all__ = ['academic_calendar_crud', 'event_crud', 'semester', 'campus', 'user']

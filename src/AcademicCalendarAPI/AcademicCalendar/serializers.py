@@ -146,3 +146,16 @@ class CampusSerializer(serializers.ModelSerializer):
             'name', 
             'organization',
         ]
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id', 
+            'username', 
+            'organization',
+            'email', 
+            'first_name',
+            'last_name'
+        ]
+        
