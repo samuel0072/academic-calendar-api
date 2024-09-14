@@ -60,3 +60,27 @@ def create_user(request):
 def profile(request): 
     serializer = UserSerializer(request.user)
     return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])    
+def delete_user(request, id): 
+    try:
+        if(request.user.id == id):
+            raise AcademicCalendarException({'id': _('You can\'t do this to your own user.')})
+        
+        user = User.objects.get(pk=id, organization=request.user.organization)
+        
+        user.delete()
+
+        return Response(status=status.HTTP_200_OK)
+    
+    except User.DoesNotExist:
+        return Response({'id':_('This user was not found')}, status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+    
+    except AcademicCalendarException as err:
+        return Response(err.args, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    
+    except Exception as e:
+        print(e.args)
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
