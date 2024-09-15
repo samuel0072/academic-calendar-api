@@ -92,6 +92,4 @@ def list_users(request):
     users = User.objects.filter(organization=request.user.organization)
     serializer = UserSerializer(users, many=True)
 
-    print(serializer.data)
-
     return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
