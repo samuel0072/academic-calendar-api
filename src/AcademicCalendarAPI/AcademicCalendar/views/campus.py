@@ -1,5 +1,5 @@
 import datetime
-from AcademicCalendar.models import Campus
+from AcademicCalendar.models import Campus, Event
 from AcademicCalendar.serializers import CampusSerializer
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 from AcademicCalendar.utils import validate_id
@@ -11,6 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 
 from django.utils.translation import gettext as _
+from django.db import transaction
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -74,9 +75,14 @@ def delete_campus(request, id):
         parsed_id = validate_id(id)
 
         campus = Campus.objects.get(pk=parsed_id, organization = request.user.organization)
+        events = Event.objects.filter(campi=campus)
         
-        campus.deleted_at = datetime.datetime.now()
-        campus.save()   
+        with transaction.atomic():
+            for event in events:
+                event.campi.remove(campus)
+                
+            campus.deleted_at = datetime.datetime.now()
+            campus.save()   
 
         return Response(status=status.HTTP_204_NO_CONTENT)
         
@@ -84,7 +90,7 @@ def delete_campus(request, id):
         return Response({"errors": [_('Could not find the campus.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
     
     except Exception as e:
         print(e.args)
