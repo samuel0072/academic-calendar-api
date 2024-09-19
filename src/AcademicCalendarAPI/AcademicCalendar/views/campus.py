@@ -75,14 +75,13 @@ def delete_campus(request, id):
         parsed_id = validate_id(id)
 
         campus = Campus.objects.get(pk=parsed_id, organization = request.user.organization)
-        events = Event.objects.filter(campi=campus)
+        events_count = Event.objects.filter(campi=campus).count()
+
+        if events_count > 0:
+            return Response({"event": [_('This campus has events associated. You should desaasiate those events before deleting this campus.')] }, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
         
-        with transaction.atomic():
-            for event in events:
-                event.campi.remove(campus)
-                
-            campus.deleted_at = datetime.datetime.now()
-            campus.save()   
+        campus.deleted_at = datetime.datetime.now()
+        campus.save()   
 
         return Response(status=status.HTTP_204_NO_CONTENT)
         
