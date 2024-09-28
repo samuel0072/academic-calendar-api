@@ -8,15 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-28 14:20-0300\n"
-"PO-Revision-Date: 2024-09-28  14:20-0300n"
-"Last-Translator: Samuel Lima da Silva <samuelima.00@outlook.com>\n"
+"POT-Creation-Date: 2024-09-28 15:29-0300\n"
+"PO-Revision-Date: 2024-09-28  14:20-0300nLast-Translator: Samuel Lima da "
+"Silva <samuelima.00@outlook.com>\n"
 "Language-Team: Dev <samuelima.00@outlook.com>\n"
 "Language: Português\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: .\AcademicCalendar\importers\events_importer.py:30
 msgid "Could not find the start date column"
 msgstr "Não foi possível encontrar a coluna de data de ínicio"
@@ -43,8 +44,9 @@ msgid ""
 "Could not import row %(row_index)s. The start_date_column value must not be "
 "empty when the previous row's period_column value is empty"
 msgstr ""
-"Nao foi possívlel importar a linha %(row_index)s. O valor da coluna de data de ínicio não pode ser "
-"vazio quando o valor da coluna de espaço da linha anterior é vazio"
+"Nao foi possívlel importar a linha %(row_index)s. O valor da coluna de data "
+"de ínicio não pode ser vazio quando o valor da coluna de espaço da linha "
+"anterior é vazio"
 
 #: .\AcademicCalendar\importers\events_importer.py:67
 #, python-format
@@ -52,8 +54,8 @@ msgid ""
 "Could not import row %(row_index)s. The end_date_column value must not be "
 "empty when the row's duration_column value is empty"
 msgstr ""
-"Não pode importar a linha %(row_index)s. O valor da coluna de data de fim não pode ser "
-"vazio quando o valor da coluna de duração está vazio"
+"Não pode importar a linha %(row_index)s. O valor da coluna de data de fim "
+"não pode ser vazio quando o valor da coluna de duração está vazio"
 
 #: .\AcademicCalendar\importers\holiday_importer.py:25
 msgid "Could not find the date column"
@@ -72,8 +74,10 @@ msgid "Regional holiday"
 msgstr "Feríado local"
 
 #: .\AcademicCalendar\models.py:51
-msgid "Non-school saturday"
-msgstr "Sábado não letivo"
+#, fuzzy
+#| msgid "Non-school saturday"
+msgid "School saturday"
+msgstr "Sábado letivo"
 
 #: .\AcademicCalendar\models.py:52
 msgid "Non-school days"
@@ -146,7 +150,7 @@ msgstr "Você não tem permissão para criar semestres nesse calendário"
 msgid "A semester can't start or end during another semester"
 msgstr "Um semestre não pode iniciar ou terminar durante outro semestre"
 
-#: .\AcademicCalendar\utils.py:104 .\AcademicCalendar\views\event_crud.py:46
+#: .\AcademicCalendar\utils.py:137 .\AcademicCalendar\views\event_crud.py:46
 #: .\AcademicCalendar\views\event_crud.py:157
 #: .\AcademicCalendar\views\semester.py:106
 msgid "The passed id is not valid"
@@ -187,8 +191,8 @@ msgid ""
 "This campus has events associated. You should desaasiate those events before "
 "deleting this campus."
 msgstr ""
-"Esse campus tem eventos associados. Você deve desassociar esses eventos antes de "
-"deletar esse campus."
+"Esse campus tem eventos associados. Você deve desassociar esses eventos "
+"antes de deletar esse campus."
 
 #: .\AcademicCalendar\views\event_crud.py:73
 msgid "campi is required"
@@ -230,12 +234,14 @@ msgid ""
 "This file could not be imported. Verify whether the file format is .xlsx or "
 "the data is structured in a date, name format."
 msgstr ""
-"Não foi possível importar o arquivo. Verifique se o arquivo está no formato .xlsx ou "
-"se os dados estão estruturados num formato de colunas data, nome."
+"Não foi possível importar o arquivo. Verifique se o arquivo está no formato ."
+"xlsx ou se os dados estão estruturados num formato de colunas data, nome."
 
 #: .\AcademicCalendar\views\event_crud.py:186
 msgid "This file could not be imported. Verify if the file format is .xlsx."
-msgstr "Não foi possível importar o arquivo. Verifique se o formato do arquivo é .xlsx"
+msgstr ""
+"Não foi possível importar o arquivo. Verifique se o formato do arquivo é ."
+"xlsx"
 
 #: .\AcademicCalendar\views\event_crud.py:217
 #: .\AcademicCalendar\views\event_crud.py:241
