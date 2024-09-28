@@ -47,23 +47,39 @@ def count_non_school_days_semester(semester: Semester):
     
     campi_school_days = []
     for campus in campi:
-        campus_non_school_day = non_school_days_in_campus(campus, semester.start_date, semester.end_date)
+        campus_non_school_day = non_school_days_in_campus(campus, semester.academic_calendar, semester.start_date, semester.end_date)
         campi_school_days.append({ "id": campus.id, "name": campus.name, "school_days_count": available_school_days - len(campus_non_school_day) })
     
     return campi_school_days
 
-#TODO: na linha 56, ele filtra os eventos que estão somente associados ao campus, mas pode existir mts eventos que não estão.
-def non_school_days_in_campus(campus: Campus, start_date: datetime.date, end_date: datetime.date):
+
+def non_school_days_in_campus(campus: Campus, calendar:AcademicCalendar, start_date: datetime.date, end_date: datetime.date):
     non_school_days = []
-    campus_non_school_events = Event.objects.filter(campi__id = campus.id, start_date__gte = start_date, end_date__lte = end_date, deleted_at__isnull = True).exclude(label=Event.SCHOOL_DAYS)
+    
+    campus_non_school_events =  Event.objects.filter(
+        label__in = [Event.NONSCHOOL_DAYS, Event.NONSCHOOL_SATURDAY],
+        academic_calendar = calendar,
+        campi__id = campus.id, 
+        start_date__gte = start_date, 
+        end_date__lte = end_date, 
+        deleted_at__isnull = True)
+    
     national_holidays = Event.objects.filter(
         start_date__gte = start_date, 
         end_date__lte = end_date, 
         label=Event.HOLIDAY, 
         organization = campus.organization,
         deleted_at__isnull = True
-        )
-    non_school_days_qs = campus_non_school_events.union(national_holidays)
+    )
+
+    regional_holidays =  Event.objects.filter(
+        label = Event.REGIONAL_HOLIDAY,
+        campi__id = campus.id, 
+        start_date__gte = start_date, 
+        end_date__lte = end_date, 
+        deleted_at__isnull = True)
+    
+    non_school_days_qs = campus_non_school_events.union(national_holidays.union(regional_holidays))
 
     for event in non_school_days_qs:
         non_school_days += non_school_days_in(event.start_date, event.end_date)
