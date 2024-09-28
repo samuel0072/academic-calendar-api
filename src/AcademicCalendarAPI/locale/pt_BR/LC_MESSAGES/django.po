@@ -1,0 +1,261 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024 Samuel Lima da Silva
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <samuelima.00@outlook.com>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-28 14:20-0300\n"
+"PO-Revision-Date: 2024-09-28  14:20-0300n"
+"Last-Translator: Samuel Lima da Silva <samuelima.00@outlook.com>\n"
+"Language-Team: Dev <samuelima.00@outlook.com>\n"
+"Language: Português\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: .\AcademicCalendar\importers\events_importer.py:30
+msgid "Could not find the start date column"
+msgstr "Não foi possível encontrar a coluna de data de ínicio"
+
+#: .\AcademicCalendar\importers\events_importer.py:33
+msgid "Could not find the description column"
+msgstr "Não foi possível encontrar a coluna de descrição"
+
+#: .\AcademicCalendar\importers\events_importer.py:36
+msgid "Could not find the duration column"
+msgstr "Não foi possível encontrar a coluna de duração"
+
+#: .\AcademicCalendar\importers\events_importer.py:39
+msgid "Could not find the period column"
+msgstr "Não foi possível encontrar a coluna de espaço"
+
+#: .\AcademicCalendar\importers\events_importer.py:42
+msgid "Could not find the end date column"
+msgstr "Não foi possível contrar a coluna de data de fim"
+
+#: .\AcademicCalendar\importers\events_importer.py:62
+#, python-format
+msgid ""
+"Could not import row %(row_index)s. The start_date_column value must not be "
+"empty when the previous row's period_column value is empty"
+msgstr ""
+"Nao foi possívlel importar a linha %(row_index)s. O valor da coluna de data de ínicio não pode ser "
+"vazio quando o valor da coluna de espaço da linha anterior é vazio"
+
+#: .\AcademicCalendar\importers\events_importer.py:67
+#, python-format
+msgid ""
+"Could not import row %(row_index)s. The end_date_column value must not be "
+"empty when the row's duration_column value is empty"
+msgstr ""
+"Não pode importar a linha %(row_index)s. O valor da coluna de data de fim não pode ser "
+"vazio quando o valor da coluna de duração está vazio"
+
+#: .\AcademicCalendar\importers\holiday_importer.py:25
+msgid "Could not find the date column"
+msgstr "Não foi possível encontrar a coluna de data"
+
+#: .\AcademicCalendar\importers\holiday_importer.py:28
+msgid "Could not find the name column"
+msgstr "Não foi possível encontrar a coluna de nome"
+
+#: .\AcademicCalendar\models.py:49
+msgid "National holiday"
+msgstr "Feríado nacional"
+
+#: .\AcademicCalendar\models.py:50
+msgid "Regional holiday"
+msgstr "Feríado local"
+
+#: .\AcademicCalendar\models.py:51
+msgid "Non-school saturday"
+msgstr "Sábado não letivo"
+
+#: .\AcademicCalendar\models.py:52
+msgid "Non-school days"
+msgstr "Dias não-letivos"
+
+#: .\AcademicCalendar\models.py:53
+msgid "School days"
+msgstr "Dias letivos"
+
+#: .\AcademicCalendar\models.py:85
+msgid "User"
+msgstr "Usuário"
+
+#: .\AcademicCalendar\models.py:93
+msgid "CSV"
+msgstr "CSV"
+
+#: .\AcademicCalendar\models.py:94
+msgid "EXCEL"
+msgstr "EXCEL"
+
+#: .\AcademicCalendar\models.py:95
+msgid "PDF"
+msgstr "PDF"
+
+#: .\AcademicCalendar\serializers.py:19 .\AcademicCalendar\serializers.py:53
+#: .\AcademicCalendar\serializers.py:98
+msgid "End date has to be after start date"
+msgstr "A data de fim deve ser após a data de ínicio"
+
+#: .\AcademicCalendar\serializers.py:43
+msgid "Color has to be a number in a hexadecimal format"
+msgstr "A cor deve ser um número no formato hexadecimal"
+
+#: .\AcademicCalendar\serializers.py:50
+msgid "An empty description is not valid"
+msgstr "Uma descrição vazia não é válida"
+
+#: .\AcademicCalendar\serializers.py:56
+msgid "A campus must be provided for this event"
+msgstr "Um campus deve ser fornecido para esse evento"
+
+#: .\AcademicCalendar\serializers.py:59
+msgid "This start date isn't a saturday"
+msgstr "A data de ínicio não é um sábado"
+
+#: .\AcademicCalendar\serializers.py:69
+msgid "You don't have permission to create events on this calendar"
+msgstr "Você não tem permissão para criar eventos nesse calendário."
+
+#: .\AcademicCalendar\serializers.py:72 .\AcademicCalendar\serializers.py:104
+#: .\AcademicCalendar\views\academic_calendar_crud.py:53
+#: .\AcademicCalendar\views\academic_calendar_crud.py:118
+#: .\AcademicCalendar\views\academic_calendar_crud.py:184
+#: .\AcademicCalendar\views\academic_calendar_crud.py:204
+#: .\AcademicCalendar\views\event_crud.py:179
+msgid "Could not find the academic calendar."
+msgstr "Não foi possível encontrar o calendário acadêmico."
+
+#: .\AcademicCalendar\serializers.py:76
+#, python-format
+msgid "You don't have permission to create events on this campus: %(name)s"
+msgstr "Você não tem permissão para criar eventos nesse campus: %(name)s"
+
+#: .\AcademicCalendar\serializers.py:101
+msgid "You don't have permission to create semesters on this calendar"
+msgstr "Você não tem permissão para criar semestres nesse calendário"
+
+#: .\AcademicCalendar\serializers.py:128
+msgid "A semester can't start or end during another semester"
+msgstr "Um semestre não pode iniciar ou terminar durante outro semestre"
+
+#: .\AcademicCalendar\utils.py:104 .\AcademicCalendar\views\event_crud.py:46
+#: .\AcademicCalendar\views\event_crud.py:157
+#: .\AcademicCalendar\views\semester.py:106
+msgid "The passed id is not valid"
+msgstr "O id informado não é válido."
+
+#: .\AcademicCalendar\views\academic_calendar_crud.py:57
+#: .\AcademicCalendar\views\academic_calendar_crud.py:122
+#: .\AcademicCalendar\views\academic_calendar_crud.py:154
+#: .\AcademicCalendar\views\academic_calendar_crud.py:188
+#: .\AcademicCalendar\views\academic_calendar_crud.py:208
+#: .\AcademicCalendar\views\campus.py:68 .\AcademicCalendar\views\campus.py:96
+#: .\AcademicCalendar\views\event_crud.py:114
+#: .\AcademicCalendar\views\event_crud.py:148
+#: .\AcademicCalendar\views\event_crud.py:191
+#: .\AcademicCalendar\views\event_crud.py:224
+#: .\AcademicCalendar\views\event_crud.py:245
+#: .\AcademicCalendar\views\semester.py:55
+#: .\AcademicCalendar\views\semester.py:76
+#: .\AcademicCalendar\views\semester.py:96 .\AcademicCalendar\views\user.py:55
+#: .\AcademicCalendar\views\user.py:86
+msgid "An unexpected error ocurred."
+msgstr "Um erro inexperado aconteceu."
+
+#: .\AcademicCalendar\views\academic_calendar_crud.py:144
+msgid "Could not retrieve the especified file. It may be deleted."
+msgstr "Não pode obter o arquivo especificado. Ele pode ter sido apagado."
+
+#: .\AcademicCalendar\views\academic_calendar_crud.py:147
+msgid "Could not find the file."
+msgstr "Não foi possível encontrar o arquivo."
+
+#: .\AcademicCalendar\views\campus.py:61 .\AcademicCalendar\views\campus.py:89
+msgid "Could not find the campus."
+msgstr "Não foi possível encontrar o campus."
+
+#: .\AcademicCalendar\views\campus.py:81
+msgid ""
+"This campus has events associated. You should desaasiate those events before "
+"deleting this campus."
+msgstr ""
+"Esse campus tem eventos associados. Você deve desassociar esses eventos antes de "
+"deletar esse campus."
+
+#: .\AcademicCalendar\views\event_crud.py:73
+msgid "campi is required"
+msgstr "campi é obrigatório"
+
+#: .\AcademicCalendar\views\event_crud.py:78
+msgid "campi should be an array of campus's ids"
+msgstr "campi deve ser um array de ids de campus"
+
+#: .\AcademicCalendar\views\event_crud.py:81
+#: .\AcademicCalendar\views\event_crud.py:122
+#: .\AcademicCalendar\views\event_crud.py:160
+msgid "No file were provided."
+msgstr "Nenhum arquivo foi fornecido."
+
+#: .\AcademicCalendar\views\event_crud.py:84
+#: .\AcademicCalendar\views\event_crud.py:125
+#: .\AcademicCalendar\views\event_crud.py:163
+msgid "The 'file' parameter is required."
+msgstr "O paramêtro 'file' é obrigatório."
+
+#: .\AcademicCalendar\views\event_crud.py:87
+#: .\AcademicCalendar\views\event_crud.py:128
+#: .\AcademicCalendar\views\event_crud.py:166
+msgid "You should provide one file at a time"
+msgstr "Você deve fornecer 1 arquivo por vez"
+
+#: .\AcademicCalendar\views\event_crud.py:92
+msgid "You should provide at least 1 campus from your organization."
+msgstr "Você deve fornecer pelo menos 1 campus de sua organização"
+
+#: .\AcademicCalendar\views\event_crud.py:103
+msgid "campi should be a valid json list"
+msgstr "campi deve ser uma lista json de formato válido"
+
+#: .\AcademicCalendar\views\event_crud.py:109
+#: .\AcademicCalendar\views\event_crud.py:142
+msgid ""
+"This file could not be imported. Verify whether the file format is .xlsx or "
+"the data is structured in a date, name format."
+msgstr ""
+"Não foi possível importar o arquivo. Verifique se o arquivo está no formato .xlsx ou "
+"se os dados estão estruturados num formato de colunas data, nome."
+
+#: .\AcademicCalendar\views\event_crud.py:186
+msgid "This file could not be imported. Verify if the file format is .xlsx."
+msgstr "Não foi possível importar o arquivo. Verifique se o formato do arquivo é .xlsx"
+
+#: .\AcademicCalendar\views\event_crud.py:217
+#: .\AcademicCalendar\views\event_crud.py:241
+msgid "Could not find the event."
+msgstr "Não foi possível encontrar o evento"
+
+#: .\AcademicCalendar\views\semester.py:48
+#: .\AcademicCalendar\views\semester.py:72
+#: .\AcademicCalendar\views\semester.py:92
+msgid "Could not find the semester."
+msgstr "Não foi possível encontrar o semestre"
+
+#: .\AcademicCalendar\views\user.py:31
+msgid "password and confirm_password are not equal."
+msgstr "Senha e confirmar senha não são iguais"
+
+#: .\AcademicCalendar\views\user.py:70
+msgid "You can't do this to your own user."
+msgstr "Você não pode fazer isso ao seu próprio usuário"
+
+#: .\AcademicCalendar\views\user.py:79
+msgid "This user was not found"
+msgstr "O usuário não foi encontrado"
