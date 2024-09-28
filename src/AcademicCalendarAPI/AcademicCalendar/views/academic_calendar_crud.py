@@ -96,9 +96,10 @@ def export_academic_calendar_events_to_csv(request, id):
 
         calendar = AcademicCalendar.objects.get(pk=parsed_id, organization = request.user.organization)
 
-        calendar_events = Event.objects.filter(academic_calendar = calendar, organization = request.user.organization)
+        calendar_events = Event.objects.filter(academic_calendar = calendar, organization = request.user.organization, deleted_at__isnull = True)
         holidays = Event.objects.filter(label__in = [Event.HOLIDAY, Event.REGIONAL_HOLIDAY], 
                                         organization = request.user.organization, 
+                                        deleted_at__isnull = True,
                                         start_date__gte = calendar.start_date, 
                                         start_date__lte = calendar.end_date)
         
@@ -161,9 +162,10 @@ def export_academic_calendar_events_to_excel(request, id):
 
         calendar = AcademicCalendar.objects.get(pk=parsed_id, organization = request.user.organization)
 
-        calendar_events = Event.objects.filter(academic_calendar = calendar, organization = request.user.organization)
+        calendar_events = Event.objects.filter(academic_calendar = calendar, organization = request.user.organization, deleted_at__isnull = True,)
         holidays = Event.objects.filter(label__in = [Event.HOLIDAY, Event.REGIONAL_HOLIDAY], 
                                         organization = request.user.organization, 
+                                        deleted_at__isnull = True,
                                         start_date__gte = calendar.start_date, 
                                         start_date__lte = calendar.end_date)
         
