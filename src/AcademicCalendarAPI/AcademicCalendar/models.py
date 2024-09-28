@@ -42,13 +42,13 @@ class Campus(TimeStampedModel):
 class Event(TimeStampedModel):
     HOLIDAY = "H"
     REGIONAL_HOLIDAY = "RH"
-    NONSCHOOL_SATURDAY = "NSS"
+    SCHOOL_SATURDAY = "SS"
     NONSCHOOL_DAYS = "NSD"
     SCHOOL_DAYS = "SD"
     LABEL_TYPES = [
         (HOLIDAY, _("National holiday")),
         (REGIONAL_HOLIDAY, _("Regional holiday")),
-        (NONSCHOOL_SATURDAY, _("Non-school saturday")),
+        (SCHOOL_SATURDAY, _("School saturday")),
         (NONSCHOOL_DAYS, _("Non-school days")), 
         (SCHOOL_DAYS, _("School days"))
     ]

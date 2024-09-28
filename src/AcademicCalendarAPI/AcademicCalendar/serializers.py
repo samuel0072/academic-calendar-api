@@ -55,7 +55,7 @@ class EventSerializer(serializers.ModelSerializer):
         if data["label"] != Event.HOLIDAY and len(data["campi"]) == 0:
             errors['campi'] = _("A campus must be provided for this event")
         
-        if (data["label"] == Event.NONSCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
+        if (data["label"] == Event.SCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
             errors['start_date'] = _("This start date isn't a saturday")
         
         if(data["label"] == Event.HOLIDAY):
