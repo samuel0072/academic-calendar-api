@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-28 15:29-0300\n"
+"POT-Creation-Date: 2024-10-09 20:40-0300\n"
 "PO-Revision-Date: 2024-09-28  14:20-0300nLast-Translator: Samuel Lima da "
 "Silva <samuelima.00@outlook.com>\n"
 "Language-Team: Dev <samuelima.00@outlook.com>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: .\AcademicCalendar\importers\events_importer.py:30
 msgid "Could not find the start date column"
-msgstr "Não foi possível encontrar a coluna de data de ínicio"
+msgstr "Não foi possível encontrar a coluna de data de início"
 
 #: .\AcademicCalendar\importers\events_importer.py:33
 msgid "Could not find the description column"
@@ -45,7 +45,7 @@ msgid ""
 "empty when the previous row's period_column value is empty"
 msgstr ""
 "Nao foi possívlel importar a linha %(row_index)s. O valor da coluna de data "
-"de ínicio não pode ser vazio quando o valor da coluna de espaço da linha "
+"de início não pode ser vazio quando o valor da coluna de espaço da linha "
 "anterior é vazio"
 
 #: .\AcademicCalendar\importers\events_importer.py:67
@@ -87,26 +87,26 @@ msgstr "Dias não-letivos"
 msgid "School days"
 msgstr "Dias letivos"
 
-#: .\AcademicCalendar\models.py:85
+#: .\AcademicCalendar\models.py:87
 msgid "User"
 msgstr "Usuário"
 
-#: .\AcademicCalendar\models.py:93
+#: .\AcademicCalendar\models.py:95
 msgid "CSV"
 msgstr "CSV"
 
-#: .\AcademicCalendar\models.py:94
+#: .\AcademicCalendar\models.py:96
 msgid "EXCEL"
 msgstr "EXCEL"
 
-#: .\AcademicCalendar\models.py:95
+#: .\AcademicCalendar\models.py:97
 msgid "PDF"
 msgstr "PDF"
 
 #: .\AcademicCalendar\serializers.py:19 .\AcademicCalendar\serializers.py:53
-#: .\AcademicCalendar\serializers.py:98
+#: .\AcademicCalendar\serializers.py:100
 msgid "End date has to be after start date"
-msgstr "A data de fim deve ser após a data de ínicio"
+msgstr "A data de fim deve ser após a data de início"
 
 #: .\AcademicCalendar\serializers.py:43
 msgid "Color has to be a number in a hexadecimal format"
@@ -122,13 +122,13 @@ msgstr "Um campus deve ser fornecido para esse evento"
 
 #: .\AcademicCalendar\serializers.py:59
 msgid "This start date isn't a saturday"
-msgstr "A data de ínicio não é um sábado"
+msgstr "A data de início não é um sábado"
 
 #: .\AcademicCalendar\serializers.py:69
 msgid "You don't have permission to create events on this calendar"
 msgstr "Você não tem permissão para criar eventos nesse calendário."
 
-#: .\AcademicCalendar\serializers.py:72 .\AcademicCalendar\serializers.py:104
+#: .\AcademicCalendar\serializers.py:72 .\AcademicCalendar\serializers.py:115
 #: .\AcademicCalendar\views\academic_calendar_crud.py:53
 #: .\AcademicCalendar\views\academic_calendar_crud.py:118
 #: .\AcademicCalendar\views\academic_calendar_crud.py:184
@@ -142,11 +142,23 @@ msgstr "Não foi possível encontrar o calendário acadêmico."
 msgid "You don't have permission to create events on this campus: %(name)s"
 msgstr "Você não tem permissão para criar eventos nesse campus: %(name)s"
 
-#: .\AcademicCalendar\serializers.py:101
+#: .\AcademicCalendar\serializers.py:103
+msgid "Lessons end date has to be after lessons start date"
+msgstr "A data de fim das aulas deve ser após a data de início das aulas"
+
+#: .\AcademicCalendar\serializers.py:106
+msgid "Lessons start date has to be between semester's start date and end date"
+msgstr "A data de início das aulas deve estar entre a data de início e fim do semestre"
+
+#: .\AcademicCalendar\serializers.py:109
+msgid "Lessons end date has to be between semester's start date and end date"
+msgstr "A data de fim das aulas deve estar entre a data de início e fim do semestre"
+
+#: .\AcademicCalendar\serializers.py:112
 msgid "You don't have permission to create semesters on this calendar"
 msgstr "Você não tem permissão para criar semestres nesse calendário"
 
-#: .\AcademicCalendar\serializers.py:128
+#: .\AcademicCalendar\serializers.py:139
 msgid "A semester can't start or end during another semester"
 msgstr "Um semestre não pode iniciar ou terminar durante outro semestre"
 

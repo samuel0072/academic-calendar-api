@@ -45,20 +45,20 @@ def specific_weekdays_between_two_dates(weekday: int, start_date: datetime.date,
 def count_non_school_days_semester(semester: Semester):
     campi = Campus.objects.filter(organization = semester.organization, deleted_at__isnull = True)
     
-    semester_total_days = (semester.end_date - semester.start_date).days + 1
+    semester_total_days = (semester.lessons_end_date - semester.lessons_start_date).days + 1
 
     #por padrão, sábado e domingo não conta
-    sundays = specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, semester.start_date, semester.end_date)
-    saturdays = specific_weekdays_between_two_dates(SATURDAY_WEEK_DAY, semester.start_date, semester.end_date)
+    sundays = specific_weekdays_between_two_dates(SUNDAY_WEEK_DAY, semester.lessons_start_date, semester.lessons_end_date)
+    saturdays = specific_weekdays_between_two_dates(SATURDAY_WEEK_DAY, semester.lessons_start_date, semester.lessons_end_date)
 
     available_school_days = semester_total_days - len(sundays) - len(saturdays)
     
     campi_school_days = []
     for campus in campi:
-        campus_non_school_day = non_school_days_in_campus(campus, semester.academic_calendar, semester.start_date, semester.end_date)
+        campus_non_school_day = non_school_days_in_campus(campus, semester.academic_calendar, semester.lessons_start_date, semester.lessons_end_date)
 
         #obtem todos os sábados letivos
-        saturday_school_days_events = saturday_school_days_in_campus(campus, semester.academic_calendar, semester.start_date, semester.end_date)
+        saturday_school_days_events = saturday_school_days_in_campus(campus, semester.academic_calendar, semester.lessons_start_date, semester.lessons_end_date)
 
         #porém se houver algum outro evento não letivo no sábado, o sábado em questão não é levado em conta
         sat_school_days = [day for day in saturday_school_days_events if day not in campus_non_school_day ]
