@@ -1,7 +1,7 @@
 import os
 from AcademicCalendar.models import *
 from AcademicCalendar.serializers import *
-from AcademicCalendar.utils import count_school_days, validate_id
+from AcademicCalendar.utils import validate_id
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 from AcademicCalendar.exporters.csv_event_exporter import CSVEventExporter
 from AcademicCalendar.exporters.excel_event_exporter import ExcelEventExporter
@@ -42,8 +42,12 @@ def school_days_count(request, id):
         parsed_id = validate_id(id)
         
         calendar = AcademicCalendar.objects.get(id=parsed_id, organization__id = request.user.organization.id, deleted_at__isnull = True)
+        campi = Campus.objects.filter(organization__id = request.user.organization.id, deleted_at__isnull = True)
+        semesters = Semester.objects.filter(academic_calendar = calendar,organization__id = request.user.organization.id, deleted_at__isnull = True)
 
-        response_data = count_school_days(calendar)
+        calendar.semesters = semesters
+
+        response_data = calendar.schoolDaysSummary(campi)
         return Response(response_data, status=status.HTTP_200_OK, content_type="aplication/json")
 
     except AcademicCalendarException as err:
