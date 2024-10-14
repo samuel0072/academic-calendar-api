@@ -14,7 +14,8 @@ class SemesterService(BaseService):
 
         for campus in campi:
             campus_summary = self.campusService.schoolDaysSummaryForAcademicCalendar(semester.academic_calendar, campus, semester.lessons_start_date, semester.lessons_end_date)
+            school_week_days = self.campusService.getWeekDays(campus_summary, semester.lessons_start_date, semester.lessons_end_date)
 
-            campi_school_days.append({ "id": campus.id, "name": campus.name, "school_days_count": len(campus_summary)})
+            campi_school_days.append({ "id": campus.id, "name": campus.name, "school_days_count": len(campus_summary), "school_week_days": school_week_days})
         
         return campi_school_days

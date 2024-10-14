@@ -3,6 +3,11 @@ import datetime
 class DaysCounterHelper:
     SUNDAY_WEEK_DAY = 6
     SATURDAY_WEEK_DAY = 5
+    FRIDAY_WEEK_DAY = 4
+    THURSDAY_WEEK_DAY = 3
+    WEDNESDAY_WEEK_DAY = 2
+    TUESDAY_WEEK_DAY = 1
+    MONDAY_WEEK_DAY = 0
     
     @staticmethod
     def allDatesSpecificWeekDay(weekday: int, start_date: datetime.date, end_date: datetime.date):

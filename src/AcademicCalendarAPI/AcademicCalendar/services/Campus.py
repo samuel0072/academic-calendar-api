@@ -70,3 +70,20 @@ class CampusService(BaseService):
             available_days = available_days.union(school_saturday_set)
 
             return available_days
+        
+        def getWeekDays(self, available_days: set, start, end):
+            mondays = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.MONDAY_WEEK_DAY, start, end)
+            tuesday = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.TUESDAY_WEEK_DAY, start, end)
+            wednesday = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.WEDNESDAY_WEEK_DAY, start, end)
+            thursday = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.THURSDAY_WEEK_DAY, start, end)
+            friday = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.FRIDAY_WEEK_DAY, start, end)
+            saturday = DaysCounterHelper.allDatesSpecificWeekDay(DaysCounterHelper.SATURDAY_WEEK_DAY, start, end)
+
+            return {
+                "mondays": len(available_days.intersection(mondays)),
+                "tuesday": len(available_days.intersection(tuesday)),
+                "wednesday": len(available_days.intersection(wednesday)),
+                "thursday": len(available_days.intersection(thursday)),
+                "friday": len(available_days.intersection(friday)),
+                "saturday": len(available_days.intersection(saturday))
+            }
