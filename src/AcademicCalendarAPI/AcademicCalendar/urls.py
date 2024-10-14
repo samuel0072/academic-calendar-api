@@ -33,4 +33,6 @@ urlpatterns = [
     path('user/profile', user.profile, name='user_profile'),
     path('user/<int:id>/delete', user.delete_user, name='delete_user'),
     path('user/list', user.list_users, name='list_usesr'),
+    path('org/info', organization.get_org_info, name='get_org_info'),
+    path('org/update_minutes', organization.update_minutes_info, name='update_minutes_info')
 ]

@@ -169,4 +169,14 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name'
         ]
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = [
+            'id', 
+            'name', 
+            'minutes_per_lesson',
+            'min_minutes_per_day'
+        ]
         
