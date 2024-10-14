@@ -1,9 +1,9 @@
 from  AcademicCalendar.models import Event
 from AcademicCalendar.helpers.DaysCounterHelper import DaysCounterHelper
+from AcademicCalendar.services.BaseService import BaseService
 
-class CampusSchoolDaysSummary:
-        @staticmethod
-        def schoolDaysSummaryForAcademicCalendar(calendar, campus, start_date, end_date):
+class CampusService(BaseService): 
+        def schoolDaysSummaryForAcademicCalendar(self, calendar, campus, start_date, end_date):
             """
                 Retorna um set com todas as datas que são dias letivos no campus para o calendário
             """

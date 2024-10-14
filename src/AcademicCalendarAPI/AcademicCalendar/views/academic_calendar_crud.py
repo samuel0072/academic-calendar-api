@@ -5,6 +5,7 @@ from AcademicCalendar.utils import validate_id
 from AcademicCalendar.exceptions.academic_calendar_exceptions import AcademicCalendarException
 from AcademicCalendar.exporters.csv_event_exporter import CSVEventExporter
 from AcademicCalendar.exporters.excel_event_exporter import ExcelEventExporter
+from AcademicCalendar.services.AcademicCalendar import AcademicCalendarService
 
 from django.http import JsonResponse, FileResponse
 from django.utils.translation import gettext as _
@@ -43,11 +44,11 @@ def school_days_count(request, id):
         
         calendar = AcademicCalendar.objects.get(id=parsed_id, organization__id = request.user.organization.id, deleted_at__isnull = True)
         campi = Campus.objects.filter(organization__id = request.user.organization.id, deleted_at__isnull = True)
-        semesters = Semester.objects.filter(academic_calendar = calendar,organization__id = request.user.organization.id, deleted_at__isnull = True)
 
-        calendar.semesters = semesters
+        service = AcademicCalendarService(request.user)
 
-        response_data = calendar.schoolDaysSummary(campi)
+        response_data = service.schoolDaysSummary(calendar, campi)
+        
         return Response(response_data, status=status.HTTP_200_OK, content_type="aplication/json")
 
     except AcademicCalendarException as err:
