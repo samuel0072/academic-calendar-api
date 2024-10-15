@@ -49,17 +49,17 @@ def school_days_count(request, id):
 
         response_data = service.schoolDaysSummary(calendar, campi)
         
-        return Response(response_data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(response_data, status=status.HTTP_200_OK, content_type="application/json")
 
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except AcademicCalendar.DoesNotExist:
-        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -88,9 +88,9 @@ def search_calendar(request):
 
         calendar_serializer.is_valid()
 
-        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="application/json")
     
-    return Response(params.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+    return Response(params.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -120,11 +120,11 @@ def export_academic_calendar_events_to_csv(request, id):
         return Response(response_objects, status=status.HTTP_201_CREATED)
         
     except AcademicCalendar.DoesNotExist:
-        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -149,14 +149,14 @@ def download_event_file(request, id):
             raise AcademicCalendarException(_('Could not retrieve the especified file. It may be deleted.'))
         
     except EventFile.DoesNotExist:
-        return Response({"errors": [_('Could not find the file.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the file.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -186,11 +186,11 @@ def export_academic_calendar_events_to_excel(request, id):
         return Response(response_objects, status=status.HTTP_201_CREATED)
         
     except AcademicCalendar.DoesNotExist:
-        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -203,11 +203,11 @@ def get_calendar_detail(request, id):
 
         calendar_serializer = CalendarSerializer(calendar)
 
-        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(calendar_serializer.data, status=status.HTTP_200_OK, content_type="application/json")
         
     except AcademicCalendar.DoesNotExist:
-        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the academic calendar.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")

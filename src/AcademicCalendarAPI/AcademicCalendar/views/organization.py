@@ -15,7 +15,7 @@ from AcademicCalendar.services.Organization import OrganizationService
 def get_org_info(request):
     service = OrganizationService(request.user)
 
-    return Response(service.getOrgInfo(), status=status.HTTP_200_OK, content_type="aplication/json")
+    return Response(service.getOrgInfo(), status=status.HTTP_200_OK, content_type="application/json")
 
 @api_view(['PUT'])
 @authentication_classes([JWTAuthentication])
@@ -25,7 +25,7 @@ def update_minutes_info(request):
 
     try:
         org_data = service.updateMinutesInfo(request.data)
-        return Response(org_data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(org_data, status=status.HTTP_200_OK, content_type="application/json")
     
     except ValidationError as e:
-        return Response(e.args[0], status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response(e.args[0], status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
