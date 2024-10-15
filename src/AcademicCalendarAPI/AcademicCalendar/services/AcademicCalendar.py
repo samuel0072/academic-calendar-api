@@ -21,7 +21,7 @@ class AcademicCalendarService(BaseService):
         
 
         counting["total_days"] = total_days
-        counting["saturday"] = len(saturdays)
+        counting["saturdays"] = len(saturdays)
         counting["sundays"] = len(sundays)
 
         semesters_data = []
