@@ -108,7 +108,7 @@ def export_academic_calendar_events_to_csv(request, id):
                                         start_date__gte = calendar.start_date, 
                                         start_date__lte = calendar.end_date)
         
-        events = calendar_events.union(holidays)
+        events = calendar_events.union(holidays).order_by('start_date')
         
         exporter = CSVEventExporter(request.user.organization, events)
         exporter.export()
@@ -174,7 +174,7 @@ def export_academic_calendar_events_to_excel(request, id):
                                         start_date__gte = calendar.start_date, 
                                         start_date__lte = calendar.end_date)
         
-        events = calendar_events.union(holidays)
+        events = calendar_events.union(holidays).order_by('start_date')
         
         exporter = ExcelEventExporter(request.user.organization, events)
         exporter.export()

@@ -74,8 +74,6 @@ msgid "Regional holiday"
 msgstr "Feríado local"
 
 #: .\AcademicCalendar\models.py:51
-#, fuzzy
-#| msgid "Non-school saturday"
 msgid "School saturday"
 msgstr "Sábado letivo"
 

@@ -29,9 +29,9 @@ class BaseEventExporter(BaseExporter):
             for campus in campi:
                 campi_str += ( campus.name + " | " )
             
-            data.append( (event.description, event.start_date, event.end_date, event.get_label_display(), campi_str ) )
+            data.append( (event.start_date, event.description, event.end_date, event.get_label_display(), campi_str ) )
 
-        self.df = pandas.DataFrame.from_records(data, columns=[self.DESCRIPTION_COLUMN, self.START_DATE_COLUMN, self.END_DATE_COLUMN, self.LABEL_COLUMN, self.CAMPI_COLUMN])
+        self.df = pandas.DataFrame.from_records(data, columns=[self.START_DATE_COLUMN, self.DESCRIPTION_COLUMN, self.END_DATE_COLUMN, self.LABEL_COLUMN, self.CAMPI_COLUMN])
         self.df[self.START_DATE_COLUMN] = pandas.to_datetime(self.df[self.START_DATE_COLUMN], errors='coerce')
         self.df[self.END_DATE_COLUMN] = pandas.to_datetime(self.df[self.END_DATE_COLUMN], errors='coerce')
     
