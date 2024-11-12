@@ -60,9 +60,9 @@ def list_events(request, id):
         serializer.is_valid()
 
     except Exception as e:
-        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="application/json")
     
-    return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+    return Response(serializer.data, status=status.HTTP_200_OK, content_type="application/json")
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -97,21 +97,21 @@ def import_regional_holidays(request):
         serializer = EventSerializer(data = imported_events, many=True)
         serializer.is_valid()
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="application/json")
 
     except JSONDecodeError:
-        return Response({"errors": _("campi should be a valid json list")}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": _("campi should be a valid json list")}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except ValueError:
         error = _('This file could not be imported. Verify whether the file format is .xlsx or the data is structured in a date, name format.')
-        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -133,19 +133,19 @@ def import_national_holidays(request):
         serializer = EventSerializer(data = imported_events, many=True)
         serializer.is_valid()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="application/json")
 
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except ValueError:
         error = _('This file could not be imported. Verify whether the file format is .xlsx or the data is structured in a date, name format.')
-        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": [error]}, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as err:
         print(err.args)
         print(type(err))
-        return Response({"errors": [_('An unexpected error ocurred.')]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -173,22 +173,22 @@ def import_events(request, id):
         serializer = EventSerializer(data = imported_events, many=True)
         serializer.is_valid()
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="application/json")
     
     except AcademicCalendar.DoesNotExist as err:
-        return Response({"errors": _('Could not find the academic calendar.') }, status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": _('Could not find the academic calendar.') }, status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except ValueError as err:
         print(err.args)
         error = _('This file could not be imported. Verify if the file format is .xlsx.')
-        return Response({"errors": [error]}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": [error]}, status=status.HTTP_400_BAD_REQUEST, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['PUT'])
 @authentication_classes([JWTAuthentication])
@@ -209,19 +209,19 @@ def edit_event(request, id):
         
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="application/json")
         else:
             raise AcademicCalendarException(serializer.errors)
         
     except Event.DoesNotExist:
-        return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response(err.args[0], status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response(err.args[0], status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['DELETE'])
 @authentication_classes([JWTAuthentication])
@@ -238,8 +238,8 @@ def delete_event(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
     except Event.DoesNotExist:
-        return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the event.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")

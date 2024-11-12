@@ -55,7 +55,7 @@ class EventSerializer(serializers.ModelSerializer):
         if data["label"] != Event.HOLIDAY and len(data["campi"]) == 0:
             errors['campi'] = _("A campus must be provided for this event")
         
-        if (data["label"] == Event.NONSCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
+        if (data["label"] == Event.SCHOOL_SATURDAY) and (data['start_date'].weekday() != SATURDAY_WEEKDAY):
             errors['start_date'] = _("This start date isn't a saturday")
         
         if(data["label"] == Event.HOLIDAY):
@@ -89,13 +89,24 @@ class SemesterSerializer(serializers.ModelSerializer):
             'end_date', 
             'description', 
             'organization', 
-            'academic_calendar'
+            'academic_calendar',
+            'lessons_start_date',
+            'lessons_end_date'
         ]
 
     def validate(self, data):
         errors = {}
         if(data['end_date'] < data['start_date']):
            errors['end_date'] = _("End date has to be after start date")
+
+        if(data['lessons_end_date'] < data['lessons_start_date']):
+           errors['lessons_end_date'] = _("Lessons end date has to be after lessons start date")
+
+        if( (data['lessons_start_date'] < data['start_date']) or  (data['lessons_start_date'] > data['end_date']) ):
+           errors['lessons_start_date'] = _("Lessons start date has to be between semester's start date and end date")
+
+        if( (data['lessons_end_date'] > data['end_date']) or  (data['lessons_end_date'] < data['start_date']) ):
+           errors['lessons_end_date'] = _("Lessons end date has to be between semester's start date and end date")
         
         if data["academic_calendar"].organization.id != data["organization"].id:
             raise serializers.ValidationError(_("You don't have permission to create semesters on this calendar"))
@@ -157,5 +168,15 @@ class UserSerializer(serializers.ModelSerializer):
             'email', 
             'first_name',
             'last_name'
+        ]
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = [
+            'id', 
+            'name', 
+            'minutes_per_lesson',
+            'min_minutes_per_day'
         ]
         

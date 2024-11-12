@@ -40,19 +40,19 @@ def edit_semester(request, id):
         
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="aplication/json")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, content_type="application/json")
         else:
             return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
         
     except Semester.DoesNotExist:
-        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response({"errors": err.args }, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['DELETE'])
 @authentication_classes([JWTAuthentication])
@@ -69,11 +69,11 @@ def delete_semester(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
     except Semester.DoesNotExist:
-        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -86,14 +86,14 @@ def get_semester_detail(request, id):
 
         semester_serializer = SemesterSerializer(semester)
 
-        return Response(semester_serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(semester_serializer.data, status=status.HTTP_200_OK, content_type="application/json")
         
     except Semester.DoesNotExist:
-        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({"errors": [_('Could not find the semester.')]},  status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": [_('An unexpected error ocurred.')]},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -113,7 +113,7 @@ def list_semesters(request, id):
         serializer = SemesterSerializer(data = semesters, many=True)
         serializer.is_valid()
         
-        return Response(serializer.data, status=status.HTTP_200_OK, content_type="aplication/json")
+        return Response(serializer.data, status=status.HTTP_200_OK, content_type="application/json")
 
     except Exception as e:
-        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="aplication/json")
+        return Response({"errors": e.args}, status=status.HTTP_400_BAD_REQUEST, content_type="application/json")

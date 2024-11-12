@@ -52,7 +52,7 @@ def create_user(request):
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -76,14 +76,14 @@ def delete_user(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     except User.DoesNotExist:
-        return Response({'id':_('This user was not found')}, status=status.HTTP_404_NOT_FOUND, content_type="aplication/json")
+        return Response({'id':_('This user was not found')}, status=status.HTTP_404_NOT_FOUND, content_type="application/json")
     
     except AcademicCalendarException as err:
-        return Response(err.args, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="aplication/json")
+        return Response(err.args, status=status.HTTP_422_UNPROCESSABLE_ENTITY, content_type="application/json")
     
     except Exception as e:
         print(e.args)
-        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="aplication/json")
+        return Response({"errors": _('An unexpected error ocurred.')},  status=status.HTTP_500_INTERNAL_SERVER_ERROR, content_type="application/json")
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
